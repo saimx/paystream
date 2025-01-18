@@ -6,10 +6,14 @@ include('header.php');
 <style>
 
     .border{
-        border: solid 1px #e7e7e7;
-        padding: 30px;
-        background-color: #fafafab8;
+        background-color: #fefefe !important;
+    border-radius: 5px  !important;
+    padding: 0.01em 16px !important;
+    
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
     }
+
+    
 </style>
 
 <?php
@@ -338,6 +342,10 @@ $(document).ready(function() {
                 $('.inventory-results').removeClass('bg-red').addClass('bg-light-green').show().find('.text').text(data.message).end().delay(4000).fadeOut();
                 $('.inv_error').hide();
                 $('.new-inv').hide();
+                // $('#inv-name').attr('readonly','true');
+                // $('#floor').attr('readonly','true');
+                // $('#customer_id').attr('readonly','true');
+
               
             } else {
                 
@@ -417,17 +425,21 @@ $(document).ready(function() {
     //
 
     $('#inv-name').on('blur', function () {
-    
+        $('.inventory-results').hide();
+        
         const name = $(this).val();
         if (name.trim() !== '') {
+            $(this).attr('readonly','true');
             $(this).append('<div class="spinner inv-spinner"></div>');
             $.ajax({
                 url: 'Inventory/InventoryController?action=checkNameAvailable', // Path to your PHP file
                 type: 'POST',
                 data: { name: name },
                 dataType: 'json',
-                success: function(response) {   
+                success: function(response) {  
+                    $('#inv-name').removeAttr('readonly'); 
                     if (response.exists) {
+                        
                         $('.inv-spinner').hide();
                         $('.receipt-generate').attr('Disabled','true');
                         $('.receipt-generate').attr('value','Disabled, Create Inventory First');
@@ -447,6 +459,7 @@ $(document).ready(function() {
                     }
                 },
                 error: function() {
+                    $(this).removeAttr('readonly');
                     $('.inv-spinner').hide();
                     $('#nameStatus').text('Error checking name.').css('color', 'red');
                 }

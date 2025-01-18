@@ -1,4 +1,4 @@
-<h3 style="text-align:center"><i style='font-size:34px'class="fontello-doc-text tooltipstered"></i>Create Receipt For the Payment</h3>
+<h3 style="text-align:center;margin-top:30px;"><i style='font-size:34px'class="fontello-doc-text tooltipstered"></i>Create Receipt For the Payment</h3>
         <form id="receiptForm">
         <input type="hidden" value="<?= session_id(); ?>" name="session_id" class="session_id"> 
        
