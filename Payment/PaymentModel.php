@@ -135,25 +135,28 @@ class PaymentModel
     public function getPaymentsWithReceipts() {
         // Query to get payments and their associated receipts
         $query = "
-            SELECT 
-                payment.id AS payment_id,
-                payment.Payment_Description,
-                payment.Installment_No,
-                payment.Due_Date,
-                payment.Due_Amt,
-                payment.Receipt_Amt,
-                payment.os_amt,
-                payment.issue_by,
-                payment.Discount_Amt,
-                customer.name AS customer_name,
-                receipt.id AS receipt_id,
-                receipt.amount AS receipt_amount,
-                receipt.date AS receipt_date,
-                receipt.file AS receipt_file
-            FROM payment
-            LEFT JOIN customers AS customer ON payment.customer_id = customer.id
-            LEFT JOIN receipts AS receipt ON payment.id = receipt.payment_id
-            ORDER BY payment.id DESC
+         SELECT 
+    payment.id AS payment_id,
+    payment.Payment_Description,
+    payment.Installment_No,
+    payment.Due_Date,
+    payment.Due_Amt,
+    payment.Receipt_Amt,
+    payment.os_amt,
+    payment.issue_by,
+    payment.Discount_Amt,
+    customer.name AS customer_name,
+    receipt.id AS receipt_id,
+    receipt.amount AS receipt_amount,
+    receipt.date AS receipt_date,
+    receipt.file AS receipt_file
+FROM payment
+LEFT JOIN customers AS customer ON payment.customer_id = customer.id
+LEFT JOIN receipts AS receipt ON payment.id = receipt.payment_id
+WHERE MONTH(receipt.date) = MONTH(CURRENT_DATE)  -- Filter for the current month
+  AND YEAR(receipt.date) = YEAR(CURRENT_DATE)    -- Filter for the current year
+ORDER BY payment.id DESC;
+
         ";
     
         $stmt = $this->pdo->prepare($query);
@@ -250,7 +253,8 @@ class PaymentModel
     inventory.name AS inventory_name,  -- Select the 'name' field from the inventory table
     inventory.floor AS inventory_floor,  -- Select the 'floor' field from the inventory table
     customers.name AS customer_name,     -- Select the 'name' field from the customer table
-    customers.id_card AS customer_id_card  -- Select the 'id_card' field from the customer table
+    customers.id_card AS customer_id_card,
+    customers.phone AS customer_phone
 FROM
     receipts AS receipt
 JOIN

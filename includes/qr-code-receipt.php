@@ -7,12 +7,19 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 // Create the URL with the dynamic ID
 
-$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https://" : "http://";
-$host = $_SERVER['HTTP_HOST'];
-$base_url = $protocol . $host;
+$currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . 
+              "://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+
+$parsedUrl = parse_url($currentUrl);
+$baseUrl = $parsedUrl['scheme'] . "://" . $parsedUrl['host'];   
+
+if (!empty($parsedUrl['path'])) {
+    $pathParts = explode('/', trim($parsedUrl['path'], '/'));
+    $baseUrl .= '/' . $pathParts[0];
+}
 
 
-$url = "$base_url/paystream/receipt-view?id=" . $id;
+$url = "$baseUrl/receipt-view?id=" . $id;
 
 // Generate the QR code and save it to a file
 $filename = 'qrcode.png'; // You can change the filename as needed

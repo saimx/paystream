@@ -85,7 +85,7 @@ $receipts = $controller2->display_receipts_for_Graph();
 
                       <!-- Dashboard dataset -->
                       <?php 
-                    include('includes/dashboard-top.php');
+                   // include('includes/dashboard-top.php');
                     
                     ?>
                     <!-- Dataset end here -->

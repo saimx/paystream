@@ -8,12 +8,10 @@ require_once 'Receipts/ReceiptsController.php';
 $controller = new PaymentController();
 $controller2 = new ReceiptsController();
 // Fetch payments from the controller
-$payments = $controller->displayAllPaymentsWithReceipts();
-$receipts = $controller2->display_receipts_for_Graph();
-// echo"<pre>";
-// print_r($payments);
 
-?>
+$receipts = $controller2->display_receipts_for_Graph();
+
+
 ?>
     <!-- End of preloader -->
  
@@ -114,7 +112,15 @@ $receipts = $controller2->display_receipts_for_Graph();
             <?php
             // Fetch payments with receipts
             $payments = $controller->displayAllPaymentsWithReceipts();
+            //             echo"<pre>";
+            // print_r($payments);
+            // die;//total_receipt_amount
+            $paymentsWithTotalReceipts = [];
             foreach ($payments as $payment) {
+
+                // if ($payment['receipt_amount'] !== null) {
+                //     $paymentsWithTotalReceipts[$payment['payment_id']]['total_receipt_amount'] += $payment['receipt_amount'];
+                // }
                 // Payment details
                 echo "<tr>";
                 echo "<td><a href='receipt-view?id=" . $payment['payment_id'] . "'>" . $payment['payment_id'] . "</a></td>";
@@ -131,7 +137,6 @@ $receipts = $controller2->display_receipts_for_Graph();
                 if (isset($payment['receipt_id'])) {
                     echo "<ul>";
                     echo "<li>Receipt ID: " . $payment['receipt_id'] . "</li>";
-                    echo "<li>Amount: " . $payment['receipt_amount'] . "</li>";
                     echo "<li>Date: " . $payment['receipt_date'] . "</li>";
                     if ($payment['receipt_file']) {
                         echo "<li><a download href='" . $payment['receipt_file'] . "' target='_blank'>View File</a></li>";
@@ -144,11 +149,25 @@ $receipts = $controller2->display_receipts_for_Graph();
                 echo"<td>".$payment['issue_by']."</td>";
 
                 echo "</tr>";
+
+                
             }
             ?>
         </tbody>
     </table>
 
+
+    <?php
+      $totalReceiptAmount = 0;
+foreach ($paymentsWithTotalReceipts as $paymentData) {
+    if ($payment['receipt_amount'] !== null) {
+        $totalReceiptAmount += $payment['receipt_amount'];
+    }
+}
+
+echo "Total Receipt Amount for the current month: " . $totalReceiptAmount;
+
+?>
                                     </div>
                                 </div>
                             </div>    

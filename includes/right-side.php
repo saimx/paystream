@@ -68,7 +68,7 @@
                                     </a>
                                     <ul>
                                         <li>
-                                            <a href="payment-new" title="Create Payment Plan"><i class="fontello-doc-add"></i>  New Installment Payment
+                                            <a href="payment-new" title="Create Payment Plan"><i class="fontello-doc-add"></i>  New Installment 
                                             </a>
                                         </li>
                                         <!-- <li>

@@ -283,6 +283,8 @@ $(document).ready(function() {
     // --------------------------------------------
 
     $('.new-inv').on('click', function () {
+       $('.receipt-generate').attr('value','Create Receipt');
+       $('.receipt-generate').removeAttr('disabled');
        event.preventDefault();
         const InvName = $('#inv-name').val();
         const floor = $('#floor').val();
@@ -415,6 +417,7 @@ $(document).ready(function() {
     //
 
     $('#inv-name').on('blur', function () {
+    
         const name = $(this).val();
         if (name.trim() !== '') {
             $(this).append('<div class="spinner inv-spinner"></div>');
@@ -423,20 +426,19 @@ $(document).ready(function() {
                 type: 'POST',
                 data: { name: name },
                 dataType: 'json',
-                success: function(response) {
+                success: function(response) {   
                     if (response.exists) {
                         $('.inv-spinner').hide();
-                        $('.new-inv').show();
-                        $('.receipt-generate').removeAttr('disabled');
+                        $('.receipt-generate').attr('Disabled','true');
+                        $('.receipt-generate').attr('value','Disabled, Create Inventory First');
                         $('.new-inv').show('fast');
                         //$('.inventory-results').removeClass('bg-red').addClass('bg-light-green').show().find('.text').text('Create New User').end().delay(4000).fadeOut();
                         
                     } else {
                         
-                        
-                        $('.receipt-generate').attr('title','Disabled, Create Inventory First');
                         $('.new-inv').hide('fast');
-                        $('.receipt-generate').attr('title','');
+                        $('.receipt-generate').attr('value','Create Receipt');
+                        $('.receipt-generate').removeAttr('Disabled');
                         $('.inv-spinner').hide();
                             if($('#inventory_id').val()==''){
                                 $('.inventory-results').removeClass('bg-light-green').addClass('bg-red').show().find('.text').text('Inventory with Name '+ name+' Already Exist in Inventory change the Name').end().delay(10000).fadeOut();
@@ -484,7 +486,7 @@ $(document).ready(function() {
                             }
                         } else {  
                             $('.new-cus').show('slow');
-                           
+                            $('#customer_id').val('');
                             $('.receipt-generate').attr('title','Create New Customer First');
                             $('.spinner').addClass('hidden');
                         }
