@@ -91,7 +91,7 @@ $payments = $controller->get_payment_with_customer($_GET['id']);
                                                 <span class="fname"><?php echo $payments[0]['customer_father']; ?></span><br>
                                                     <span class="idcard"><?php echo $payments[0]['customer_idCard']; ?></span><br>
                                                     <div class="row">
-                                                    <img class="qr" src="qr-code.php"/>
+                                                    <img class="qr" src="includes/qr-code.php"/>
                                                     </div>
                                                     
                                                     <br>

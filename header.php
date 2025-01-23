@@ -40,7 +40,7 @@ require_once(__DIR__ . '/../../config.php');
    
 
 
-    <link href="http://cdn.datatables.net/1.10.5/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.datatables.net/1.10.5/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
 
     <link href="js/footable/css/footable.core.css?v=2-0-1" rel="stylesheet" type="text/css" />
     <link href="js/footable/css/footable.standalone.css" rel="stylesheet" type="text/css" />

@@ -118,7 +118,30 @@ $payments = $controller->get_payment_with_receipt($_GET['id']);
             <!-- end of top nav -->
 
             <!-- breadcrumbs -->
-        <?php //include('includes/breadcrum.php') ?>
+            <ul class="breadcrumbs ">
+                                <?php
+
+                                 if (isset($payments[1])) {
+
+                                    foreach ($payments as $index => $payment) {
+                                        $number = $index+1;
+                                        echo "<li><a class='' href='?id={$_GET['id']}&index={$index}'><span class='fontello-popup'></span>Receipt {$number}</a></li>";
+                                        
+                                    }
+                                }
+                                if(!isset($_GET['index']))
+                                {
+                                    $index = 0;
+                                }else{
+                                    $index = $_GET['index'];
+                                    $formatter = new NumberFormatter('en', NumberFormatter::SPELLOUT);
+                                    $numberInWords = $formatter->format($payments[$index]['amount']);
+                                    $payments[$index]['receive_mount_in_words']=strtoupper($numberInWords);
+
+                                }
+                                
+                                ?>
+            </ul>
             <!-- end of breadcrumbs -->
 
         <!-- ---------------------------------------------- -->
@@ -134,10 +157,17 @@ $payments = $controller->get_payment_with_receipt($_GET['id']);
                                     <span class="box-btn" data-widget="remove"><i class="icon-cross"></i>
                                     </span>
                                 </div>
+                               
+                                    <a href="#"><span class="entypo-home"></span></a>
+                                    
+                                    
+
+                                
+                               
                                 <a style="font-size:12px" id="printButton" href="#" class="button tiny radius"><i class="fontello-print"></i> Print</a>
                                 <a  class="button tiny radius" id="downloadPdf"><i class="fontello-download"></i>Download as PDF</a>
                                 <a target="_blank" href="https://wa.me/<?= $payments[0]['customer_phone'] ?>?text=Aoa," class="button tiny radius bg-green "><i class="fontello-forward"></i> Share</a>
-
+    
                                 
                                     
                                 
@@ -194,21 +224,21 @@ $payments = $controller->get_payment_with_receipt($_GET['id']);
                             <div class="row line-h">
                                 <div class="columns large-11 medium-11 small-11 large-centered  medium-centered small-centered" style="margin-top: 10px;">
                                     <!-- if Os_amount is not empty then it will be a partial payment -->
-                                    <?php if (!empty($payments[0]['os_amt']) && $payments[0]['os_amt'] != 0) { ?> 
+                                    <?php if (!empty($payments[$index]['os_amt']) && $payments[$index]['os_amt'] != 0) { ?> 
                                         <h3 class="weigh-normal contex">
                                             This is to acknowledge receipt of a partial payment of  <span class="highlight">
-                                            <?= $payments[0]['receive_mount_in_words'] ?></span><span class="highlight"> (PKR <?= number_format($payments[0]['Receipt_Amt'])?>) </span>
-                                            from <span class="highlight"><?=strtoupper($payments[0]['customer_name'])?></span> with ID Card No:<span class="highlight"> <?=($payments[0]['customer_id_card'])?></span> as part of the total payment of <span class="highlight"> <?=($payments[0]['amount_in_words'])?></span> <span class="highlight">(Rs <?=($payments[0]['Due_Amt'])?>)</span>
-                                            as payment for the purchase of <span class="highlight underline"><?=($payments[0]['inventory_name'])?></span> located in <span class="highlight underline"><?=($payments[0]['inventory_floor'])?></span> through <span class="highlight"><?=strtoupper(($payments[0]['method']))?> </span>with reference  
-                                            <span class="highlight"><?=($payments[0]['ref_cheq_no'])?></span> on <span class="highlight"> <?=$payments[0]['Due_Date']?></span>.The remaining balance of <?= $payments[0]['remaining_mount_in_words'] ?></span><span class="highlight"> (PKR <?= number_format($payments[0]['os_amt'])?>) </span> is yet to be paid.
+                                            <?= $payments[$index]['receive_mount_in_words'] ?></span><span class="highlight">  (PKR <?= number_format($payments[$index]['amount'])?>) </span>
+                                            from <span class="highlight"><?=strtoupper($payments[$index]['customer_name'])?></span> with ID Card No:<span class="highlight"> <?=($payments[$index]['customer_id_card'])?></span> as part of the total payment of <span class="highlight"> <?=($payments[$index]['amount_in_words'])?></span> <span class="highlight">(Rs <?=($payments[0]['Due_Amt'])?>)</span>
+                                            as payment for the purchase of <span class="highlight underline"><?=($payments[0]['inventory_name'])?></span> located in <span class="highlight underline"><?=($payments[0]['inventory_floor'])?></span> through <span class="highlight"><?=strtoupper(($payments[$index]['method']))?> </span>with reference  
+                                            <span class="highlight"><?=($payments[$index]['ref_cheq_no'])?></span> on <span class="highlight"> <?=$payments[$index]['Due_Date']?></span>.The remaining balance of <?= $payments[0]['remaining_mount_in_words'] ?></span><span class="highlight"> (PKR <?= number_format($payments[$index]['os_amt'])?>) </span> is yet to be paid.
                                         </h3>
                                     <?php }else{ ?>
                                     <h3 class="weigh-normal contex">
                                         This is to acknowledge receipt of an amount of <span class="highlight">
-                                        <?= $payments[0]['receive_mount_in_words'] ?></span><span class="highlight"> (PKR <?= number_format($payments[0]['Receipt_Amt'])?>) </span>
-                                        from <span class="highlight"><?=strtoupper($payments[0]['customer_name'])?></span> with ID Card No:<span class="highlight"> <?=($payments[0]['customer_id_card'])?></span> 
-                                        as payment for the purchase of <span class="highlight underline"><?=($payments[0]['inventory_name'])?></span> located in <span class="highlight underline"><?=($payments[0]['inventory_floor'])?></span> through <span class="highlight"><?=strtoupper(($payments[0]['method']))?> </span>with reference  
-                                        <span class="highlight"><?=($payments[0]['ref_cheq_no'])?></span> on <span class="highlight"> <?=$payments[0]['Due_Date']?></span>.
+                                        <?= $payments[$index]['receive_mount_in_words'] ?></span><span class="highlight"> (PKR <?= number_format($payments[$index]['amount'])?>) </span>
+                                        from <span class="highlight"><?=strtoupper($payments[$index]['customer_name'])?></span> with ID Card No:<span class="highlight"> <?=($payments[$index]['customer_id_card'])?></span> 
+                                        as payment for the purchase of <span class="highlight underline"><?=($payments[0]['inventory_name'])?></span> located in <span class="highlight underline"><?=($payments[$index]['inventory_floor'])?></span> through <span class="highlight"><?=strtoupper(($payments[$index]['method']))?> </span>with reference  
+                                        <span class="highlight"><?=($payments[$index]['ref_cheq_no'])?></span> on <span class="highlight"> <?=$payments[$index]['Due_Date']?></span>.
                                     </h3>
 
                                     <img class="stamp right" src="img/receipt/fullpaid.png">
@@ -231,11 +261,24 @@ $payments = $controller->get_payment_with_receipt($_GET['id']);
                             </div>
 
                             <!-- Footer Note -->
+                             <?php 
+                             if(!empty($payments[$index]['note'])){
+                             ?>
                             <blockquote class="footer-note footer-down" style="position: relative;">
-                                NOTE: <?= htmlspecialchars($payments[0]['note'], ENT_QUOTES, 'UTF-8') ?>
+                                NOTE: <?= htmlspecialchars($payments[$index]['note'], ENT_QUOTES, 'UTF-8') ?>
                                 <hr>
-                                <span class="issue">Issued By(<?=($payments[0]['issue_by'])?>)</span> 
+                                <span class="issue">Issued By(<?=($payments[$index]['issue_by'])?>)</span> 
                             </blockquote>
+
+                            <?php
+
+                             }else{
+                                ?>
+
+                                <span class="issue">Issued By(<?=($payments[$index]['issue_by'])?>)</span> 
+                            <?php 
+                            }
+                            ?>
                          
                 
 
@@ -346,7 +389,7 @@ $payments = $controller->get_payment_with_receipt($_GET['id']);
         pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
 
         // Save the PDF
-        pdf.save('invoice.pdf');
+        pdf.save('receipt-'+<?=trim($_GET['id']);?>+'.pdf');
     });
 });
     </script>
@@ -429,6 +472,7 @@ $payments = $controller->get_payment_with_receipt($_GET['id']);
     .contex{
         text-transform: none !important;
         text-align: justify;
+        font-family:font-family: "Nunito", serif !important;
     }
         .size{
         width: 90px !important;

@@ -74,7 +74,7 @@ class PaymentModel
             $stmt = $this->pdo->prepare($sql);
     
             // Bind parameters
-            $stmt->bindValue(':Payment_Description', $data['inv-name'] . '-' . $data['floor'] . '- Payment');
+            $stmt->bindValue(':Payment_Description', $data['inv-name'] . '-' . $data['floor'] );
             $stmt->bindValue(':Installment_No', 0);
             $stmt->bindValue(':Due_Date', $today);
             $stmt->bindValue(':Due_Amt', $data['famount']);

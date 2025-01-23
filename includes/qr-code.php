@@ -1,6 +1,12 @@
 <?php
 // Include the PHP QR Code library
 include 'qrcode/qrlib.php'; // Adjust the path as necessary
+
+// Get the dynamic ID from the request (e.g., from a GET parameter)
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+// Create the URL with the dynamic ID
+
 $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . 
               "://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
 
@@ -11,13 +17,6 @@ if (!empty($parsedUrl['path'])) {
     $pathParts = explode('/', trim($parsedUrl['path'], '/'));
     $baseUrl .= '/' . $pathParts[0];
 }
-
-// Get the dynamic ID from the request (e.g., from a GET parameter)
-$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-
-// Create the URL with the dynamic ID
-
-
 
 
 $url = "$baseUrl/inventory-payment?id=" . $id;
@@ -33,3 +32,5 @@ readfile($filename);
 // // Optionally, delete the file after outputting it
 // unlink($filename);
 ?>
+
+

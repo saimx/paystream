@@ -10,6 +10,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Paystream V1.2</title>
+    <link rel="icon" type="image/x-icon" href="https://paystream.pk/ajmair/img/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/foundation.css" />
 

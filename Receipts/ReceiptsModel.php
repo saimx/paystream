@@ -20,32 +20,37 @@ class ReceiptModel
     }
 
     public function storeDirectReceipt(array $data, $payment_id){
+        
+        $issue = $_SESSION['Name'];
+       
+       
         try {
             $date = date('Y-m-d'); // Current date
-    
+
             // Prepare the query
             $sql = "INSERT INTO `receipts` 
-                    (`payment_id`, `customer_id`, `amount`, `method`, `note`, `date`, `ref_cheq_no`, `conditional`, `file`) 
+                    (`payment_id`, `customer_id`, `amount`, `method`, `note`, `date`, `ref_cheq_no`, `issue`, `conditional`, `file`) 
                     VALUES 
-                    (:payment_id, :customer_id, :amount, :method, :note, :date, :ref_cheq_no, :conditional, :file)";
-    
+                    (:payment_id, :customer_id, :amount, :method, :note, :date, :ref_cheq_no, :issue, :conditional, :file)";
+
             $stmt = $this->pdo->prepare($sql);
-    
+
             // Bind parameters
             $stmt->bindValue(':payment_id', $payment_id, PDO::PARAM_INT);
             $stmt->bindValue(':customer_id', $data['customer_id'], PDO::PARAM_INT);
-            $stmt->bindValue(':amount', $data['amount']);
-            $stmt->bindValue(':method', $data['method']);
-            $stmt->bindValue(':note', $data['note']);
-            $stmt->bindValue(':date', $date);
-            $stmt->bindValue(':ref_cheq_no', $data['ref_cheq_no']);
-            $stmt->bindValue(':conditional', $data['condition']);
-            $stmt->bindValue(':file', $data['photo_path']);
-    
+            $stmt->bindValue(':amount', $data['amount'], PDO::PARAM_STR);
+            $stmt->bindValue(':method', $data['method'], PDO::PARAM_STR);
+            $stmt->bindValue(':note', $data['note'], PDO::PARAM_STR);
+            $stmt->bindValue(':issue', $issue, PDO::PARAM_STR);
+            $stmt->bindValue(':date', $date, PDO::PARAM_STR);
+            $stmt->bindValue(':ref_cheq_no', $data['ref_cheq_no'], PDO::PARAM_STR);
+            $stmt->bindValue(':conditional', $data['condition'], PDO::PARAM_STR);
+            $stmt->bindValue(':file', $data['photo_path'], PDO::PARAM_STR);
+
             // Execute the query
             $stmt->execute();
             $insertedId = $this->pdo->lastInsertId();
-    
+
             return [
                 'success' => true,
                 'id' => $insertedId,
@@ -174,23 +179,31 @@ class ReceiptModel
     public function updateReceipt($id, array $data)
     {
         try {
-            $sql = "UPDATE receipts SET
-                        payment_id = :payment_id,
-                        amount = :amount,
-                        date = :date,
-                        ref_cheq_no = :ref_cheq_no,
-                        file = :file
-                    WHERE id = :id";
+                    $sql = "UPDATE receipts SET
+                    payment_id = :payment_id,
+                    amount = :amount,
+                    date = :date,
+                    ref_cheq_no = :ref_cheq_no,
+                    note = :note,
+                    issue = :issue,
+                    method = :method,
+                    file = :file
+                WHERE id = :id";
 
-            $stmt = $this->pdo->prepare($sql);
+                $stmt = $this->pdo->prepare($sql);
+                session_start();
+                $issue = $_SESSION['name'];
 
-            // Bind parameters
-            $stmt->bindParam(':payment_id', $data['payment_id'], PDO::PARAM_INT);
-            $stmt->bindParam(':amount', $data['amount']);
-            $stmt->bindParam(':date', $data['date']);
-            $stmt->bindParam(':ref_cheq_no', $data['ref_cheq_no']);
-            $stmt->bindParam(':file', $data['file']);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+                // Bind parameters
+                $stmt->bindParam(':payment_id', $data['payment_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':amount', $data['amount']);
+                $stmt->bindParam(':date', $data['date']);
+                $stmt->bindParam(':note', $data['note']);
+                $stmt->bindParam(':issue', $issue);
+                $stmt->bindParam(':method', $data['method']);
+                $stmt->bindParam(':ref_cheq_no', $data['ref_cheq_no']);
+                $stmt->bindParam(':file', $data['file']);
+                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
             $stmt->execute();
 

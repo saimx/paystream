@@ -109,7 +109,8 @@ class ReceiptsController
             'amount' => $amount,
             'note' => $note,
             'ref_cheq_no'=> $ref_cheq_no,
-            'method'=>$method
+            'method'=>$method,
+            
         ];
 
         if ($id) {

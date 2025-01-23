@@ -93,6 +93,53 @@ $receipts = $controller2->display_receipts_for_Graph();
                                     <a href="#" id="downloadButton" class="button tiny radius">
                                                                         <i class="fontello-download"></i> Download
                                                                     </a>
+<!-- ----------------------------------------------------------------Section to display stats -->
+
+<?php 
+$payments = $controller->displayAllPaymentsWithReceipts();
+
+$totalDueAmt = 0;
+$totalReceiptAmt = 0;
+$totalOsAmt = 0;
+foreach ($payments as $item) {
+    $totalDueAmt += isset($item['Due_Amt']) ? floatval($item['Due_Amt']) : 0;
+    $totalReceiptAmt += isset($item['Receipt_Amt']) ? floatval($item['Receipt_Amt']) : 0;
+    $totalOsAmt += isset($item['os_amt']) ? floatval($item['os_amt']) : 0;
+}
+
+
+?>
+                                                                <div class="row not-for-print ">
+                                                                        <div class="columns large-4 small-4">
+                                                                            <div class="summary-nest">
+                                                                                <h2 class="text-black total_value"><span class="counter-up-fast"><?php echo number_format($totalDueAmt, 0) ?></span><small>PKR</small></h2>
+                                                                                <p>Total Amount</p>
+                                                                            </div>
+                                                                        </div>
+                                                                        
+                                                                        <!--  -->
+                                                                        <div class="columns large-4 small-4 summary-border-left">
+                                                                            <div class="summary-nest">
+                                                                                <h2 class="text-black total_value"><span class="counter-up"><?php echo number_format($totalOsAmt, 0) ?></span><small>PKR</small></h2>
+                                                                                <p>Total Outstanding</p>
+                                                                            </div>
+                                                                        </div>
+                                                                        <!--  -->
+                                                                        <div class="columns large-4  small-4 summary-border-left">
+                                                                            <div class="summary-nest">
+                                                                                <h2 class="text-black total_value"><span class="counter-up mint"><?php echo number_format($totalReceiptAmt, 0) ?></span><small>PKR</small></h2>
+                                                                                <p class="mint">Total Received</p>
+                                                                            </div>
+                                                                        </div>
+                                                                        
+                                                                    
+                                                                        
+                                                                    </div>
+                                                                 
+
+<!-- ----------------------------------------------------------------Section to display stats -->
+
+
                                     <table class="table table-striped table-bordered display payment-table dataTable no-footer ">
         <thead>
             <tr>
@@ -111,16 +158,13 @@ $receipts = $controller2->display_receipts_for_Graph();
         <tbody>
             <?php
             // Fetch payments with receipts
-            $payments = $controller->displayAllPaymentsWithReceipts();
+            
             //             echo"<pre>";
             // print_r($payments);
             // die;//total_receipt_amount
-            $paymentsWithTotalReceipts = [];
+            // $paymentsWithTotalReceipts = [];
             foreach ($payments as $payment) {
 
-                // if ($payment['receipt_amount'] !== null) {
-                //     $paymentsWithTotalReceipts[$payment['payment_id']]['total_receipt_amount'] += $payment['receipt_amount'];
-                // }
                 // Payment details
                 echo "<tr>";
                 echo "<td><a href='receipt-view?id=" . $payment['payment_id'] . "'>" . $payment['payment_id'] . "</a></td>";
@@ -128,9 +172,9 @@ $receipts = $controller2->display_receipts_for_Graph();
                 echo "<td><a href='receipt-view?id=" . $payment['payment_id'] . "'>" . $payment['Payment_Description'] . "</a></td>";
                 // echo "<td>" . $payment['Installment_No'] . "</td>";
                 echo "<td>" . $payment['Due_Date'] . "</td>";
-                echo "<td>" . $payment['Due_Amt'] . "</td>";
-                echo "<td>" . $payment['os_amt'] . "</td>";
-                echo "<td>" . $payment['Receipt_Amt'] . "</td>";
+                echo "<td>" . number_format($payment['Due_Amt']) . "</td>";
+                echo "<td>" . number_format($payment['os_amt']) . "</td>";
+                echo "<td style='color: #00b265;font-weight: 800;'>" . number_format($payment['Receipt_Amt']) . "</td>";
 
                 // List associated receipts
                 echo "<td>";
@@ -156,18 +200,12 @@ $receipts = $controller2->display_receipts_for_Graph();
         </tbody>
     </table>
 
+ 
 
-    <?php
-      $totalReceiptAmount = 0;
-foreach ($paymentsWithTotalReceipts as $paymentData) {
-    if ($payment['receipt_amount'] !== null) {
-        $totalReceiptAmount += $payment['receipt_amount'];
-    }
-}
 
-echo "Total Receipt Amount for the current month: " . $totalReceiptAmount;
 
-?>
+
+
                                     </div>
                                 </div>
                             </div>    
