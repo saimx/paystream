@@ -139,7 +139,23 @@ class CustomerModel
             ];
         }
     }
-
+        public function getCustomerByPhone($phone)
+        {
+            try {
+                $sql = "SELECT id, name, id_card FROM customers WHERE phone = :phone";
+                $stmt = $this->pdo->prepare($sql);
+                $stmt->bindParam(':phone', $phone, PDO::PARAM_STR);
+                $stmt->execute();
+        
+                // Fetch and return customer data as an associative array
+                return $stmt->fetch(PDO::FETCH_ASSOC);
+            } catch (PDOException $e) {
+                // Log the error (optional) and return false in case of failure
+                error_log('Error fetching customer by phone: ' . $e->getMessage());
+                return false;
+            }
+        }
+    
 
        public function getCustomerByIdCard($idCard)
         {

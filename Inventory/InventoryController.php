@@ -45,8 +45,12 @@ class InventoryController
         $bookingDate = date('Y-m-d H:i:s');
         $status = 'booked';
         $floor = $_POST['floor'] ?? '';
-        $code = $name.'-'.$type.'-'.$floor;
+        $code = $_POST['registration_number'] ?? '';
         $customer_id = $_POST['customer_id'] ?? '';
+        $possession = $_POST['possession'] ?? '';
+        $utility = $_POST['utility'] ?? '';
+        $extra = $_POST['extra'] ?? '';
+        $corner = $_POST['corner'] ?? '';
         // Validate form inputs
         $errors = [];
         if (empty($customer_id)) {
@@ -73,8 +77,16 @@ class InventoryController
             'booking_date' => $bookingDate,
             'status' => $status,
             'floor' => $floor,
-            'customer_id'=>$customer_id
+            'customer_id'=>$customer_id,
+            'possession'=>$possession,
+            'utility'=>$utility,
+            'extra'=> $extra,
+            'corner'=> $corner
+
+
         ];
+       
+
 
         $result = $this->inventoryModel->storeInventory($inventoryData);
         if ($result['success']) {

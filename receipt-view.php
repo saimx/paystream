@@ -100,9 +100,9 @@ include('header.php');
 require_once 'Payment/PaymentController.php';
 $controller = new PaymentController();
 $payments = $controller->get_payment_with_receipt($_GET['id']);
-// echo"<pre>";
-//  print_r($payments);
-//  die;
+echo"<pre>";
+ print_r($payments);
+ die;
 ?>
     <!-- End of preloader -->
  

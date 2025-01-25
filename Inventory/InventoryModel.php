@@ -31,18 +31,24 @@ class InventoryModel
     
     public function storeInventory(array $data)
     {
+
+        // echo'<pre>';
+        // print_r($data);
+        // die;
         try {
             // SQL query with customer_id included
             $sql = "INSERT INTO inventory (
-                        name, size, type, project, code, 
-                        booking_date, status, floor, customer_id
-                    ) VALUES (
-                        :name, :size, :type, :project, :code, 
-                        :booking_date, :status, :floor, :customer_id
-                    )";
-    
+                name, size, type, project, code, 
+                booking_date, status, floor, customer_id, 
+                possession, utility, extra, corner
+            ) VALUES (
+                :name, :size, :type, :project, :code, 
+                :booking_date, :status, :floor, :customer_id, 
+                :possession, :utility, :extra, :corner
+            )";
+
             $stmt = $this->pdo->prepare($sql);
-    
+
             // Bind parameters
             $stmt->bindParam(':name', $data['name']);
             $stmt->bindParam(':size', $data['size']);
@@ -52,6 +58,11 @@ class InventoryModel
             $stmt->bindParam(':booking_date', $data['booking_date']);
             $stmt->bindParam(':status', $data['status']);
             $stmt->bindParam(':floor', $data['floor']);
+            $stmt->bindParam(':customer_id', $data['customer_id']);
+            $stmt->bindParam(':possession', $data['possession']);
+            $stmt->bindParam(':utility', $data['utility']);
+            $stmt->bindParam(':extra', $data['extra']);
+            $stmt->bindParam(':corner', $data['corner']);
     
             // Use null if customer_id is not present in $data
             $customer_id = $data['customer_id'] ?? null;

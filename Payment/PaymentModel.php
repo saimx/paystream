@@ -52,56 +52,78 @@ class PaymentModel
 
 
     public function storeDirectPayment(array $data)
-    {
-        try {
-            $today = date('Y-m-d'); // Current date
-    
-            // Determine `os_amt` based on the status
-            $os_amt = ($data['status'] == 'partial') ? $data['ramount'] : 0;
-    
-            // Get the `issued_by` from the session
-            session_start();
-            $issued_by = $_SESSION['Name'];
-    
-            // Prepare the query
-            $sql = "INSERT INTO `payment` 
-                (`Payment_Description`, `Installment_No`, `Due_Date`, `Due_Amt`, `Receipt_Amt`, `os_amt`, `Discount_Amt`, `Inventory_id`, `customer_id`, 
-                 `remaining_mount_in_words`, `receive_mount_in_words`, `amount_in_words`, `issue_by`) 
-                VALUES 
-                (:Payment_Description, :Installment_No, :Due_Date, :Due_Amt, :Receipt_Amt, :os_amt, :Discount_Amt, :Inventory_id, :customer_id,
-                 :remaining_mount_in_words, :receive_mount_in_words, :amount_in_words, :issue_by)";
-    
-            $stmt = $this->pdo->prepare($sql);
-    
-            // Bind parameters
-            $stmt->bindValue(':Payment_Description', $data['inv-name'] . '-' . $data['floor'] );
-            $stmt->bindValue(':Installment_No', 0);
-            $stmt->bindValue(':Due_Date', $today);
-            $stmt->bindValue(':Due_Amt', $data['famount']);
-            $stmt->bindValue(':Receipt_Amt', $data['amount']);
-            $stmt->bindValue(':os_amt', $os_amt);
-            $stmt->bindValue(':Discount_Amt', 0.00);
-            $stmt->bindValue(':Inventory_id', $data['inventory_id'] ?? null, PDO::PARAM_INT);
-            $stmt->bindValue(':customer_id', $data['customer_id'], PDO::PARAM_INT);
-            $stmt->bindValue(':remaining_mount_in_words', $data['remaining_mount_in_words'] ?? '');
-            $stmt->bindValue(':receive_mount_in_words', $data['receive_mount_in_words'] ?? '');
-            $stmt->bindValue(':amount_in_words', $data['amount_in_words'] ?? '');
-            $stmt->bindValue(':issue_by', $issued_by);
-    
-            // Execute the query
-            $stmt->execute();
-            $insertedId = $this->pdo->lastInsertId();
-    
-            return [
-                'success' => true,
-                'id' => $insertedId,
-            ];
-        } catch (PDOException $e) {
-            // Log error and return false
-            error_log('Error storing payment: ' . $e->getMessage());
-            return false;
+{
+    try {
+        $today = date('Y-m-d'); // Current date
+
+        // Determine `os_amt` based on the status
+        $os_amt = (empty($data['ramount'])) ? 0 : $data['ramount'];
+        // --------------
+        if(!empty($data['token_type'])){
+            $token = $data['token_type'];
+        }else{
+            $token = 'N/A';
         }
+      
+
+  
+        // -------------------------
+
+        // Get the `issued_by` from the session
+        session_start();
+        $issued_by = $_SESSION['Name'];
+
+        // Prepare the query with the additional fields
+        $sql = "INSERT INTO `payment` 
+            (`Payment_Description`, `Installment_No`, `Due_Date`, `Due_Amt`, `Receipt_Amt`, `os_amt`, `Discount_Amt`, `Inventory_id`, `customer_id`, 
+             `remaining_mount_in_words`, `receive_mount_in_words`, `amount_in_words`, `issue_by`, `reqested_by`, `biyanah`, `biyanah_date`, 
+             `biyanah_in_words`, `remaining_date`, `token_type`) 
+            VALUES 
+            (:Payment_Description, :Installment_No, :Due_Date, :Due_Amt, :Receipt_Amt, :os_amt, :Discount_Amt, :Inventory_id, :customer_id,
+             :remaining_mount_in_words, :receive_mount_in_words, :amount_in_words, :issue_by, :reqested_by, :biyanah, :biyanah_date, 
+             :biyanah_in_words, :remaining_date, :token_type)";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        // Bind parameters for the existing fields
+        $stmt->bindValue(':Payment_Description', $data['inv-name'] . '-' . $data['floor']);
+        $stmt->bindValue(':Installment_No', 0);
+        $stmt->bindValue(':Due_Date', $today);
+        $stmt->bindValue(':Due_Amt', $data['famount']);
+        $stmt->bindValue(':Receipt_Amt', $data['amount']);
+        $stmt->bindValue(':os_amt', $os_amt);
+        $stmt->bindValue(':Discount_Amt', 0.00);
+        $stmt->bindValue(':Inventory_id', $data['inventory_id'] ?? null, PDO::PARAM_INT);
+        $stmt->bindValue(':customer_id', $data['customer_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':remaining_mount_in_words', $data['remaining_mount_in_words'] ?? '');
+        $stmt->bindValue(':receive_mount_in_words', $data['receive_mount_in_words'] ?? '');
+        $stmt->bindValue(':amount_in_words', $data['amount_in_words'] ?? '');
+        $stmt->bindValue(':issue_by', $issued_by);
+
+        // Bind parameters for the new fields
+        $stmt->bindValue(':reqested_by', $data['reqested_by'] ?? '');
+        $stmt->bindValue(':biyanah', $data['biyanah'] ?? 0, PDO::PARAM_INT);
+        $stmt->bindValue(':biyanah_date', $data['biyanah_date'] ?? null);
+        $stmt->bindValue(':biyanah_in_words', $data['biyanah_in_words'] ?? '');
+        $stmt->bindValue(':remaining_date', $data['remaining_date'] ?? null);
+
+        // Bind parameter for `token_type`
+        $stmt->bindValue(':token_type', $token ?? '');
+
+        // Execute the query
+        $stmt->execute();
+        $insertedId = $this->pdo->lastInsertId();
+
+        return [
+            'success' => true,
+            'id' => $insertedId,
+        ];
+    } catch (PDOException $e) {
+        // Log error and return false
+        error_log('Error storing payment: ' . $e->getMessage());
+        return false;
     }
+}
 
     public function getSumOfPaymentsByInventoryId($inventoryId)
     {
