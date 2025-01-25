@@ -7,33 +7,42 @@
              
                
                  <div class="medium-12 cell">
-                    <label for="amount">ISSUED BY:
+                    <label for="amount">Created BY:
                         <input type="text" readonly class="" id="" value="<?= $_SESSION['Name'] ?>" name="issued" placeholder="Enter Amount" required>
+                    </label>
+                </div>
+
+                <div class="medium-12 cell">
+                    <label for="amount">Reqested BY:
+                        <input type="text" autocomplete="on" class="" id="" value="" name="issued" placeholder="Enter The Name who requested to create this Receipt " required>
                     </label>
                 </div>
                 <hr>
 
                 <div class="medium-12 large-12 cell">
                     <div class="row">
-                        <div class="columns small-4  medium-4 large-2 left">
-                            <label for="confirm">CONFIRM</label>
-                            <input checked type="checkbox" id="confirm" name="condition">
-                        </div>
+
+                    <div class="columns small-4 medium-4 large-2 left">
+                            <label for="conditional">CONDITIONAL TOKEN</label>
+                            <input type="checkbox" id="conditional" value="conditional-token" name="condition">
+                    </div>
+
+                    <div class="columns small-4  medium-4 large-2 left">
+                            <label for="confirm">CONFIRM TOKEN</label>
+                            <input checked type="checkbox" id="confirm"  value="confirm-token"  name="condition">
+                    </div>
                         
-                        <div class="columns small-4 medium-4 large-2 left">
-                            <label for="conditional">CONDITIONAL</label>
-                            <input type="checkbox" id="conditional" name="condition">
-                        </div>
+                        
 
                         <div class="columns small-12 medium-12   large-6 left condition hidden">
-                            <label for="condition">CONDITION</label>
+                            <label for="condition">CONDITION(if there is a condition)</label>
                             <textarea name="condition" ></textarea>
                         </div>
                     </div>
                 </div>
 
 
-                <div class="medium-12 large-12 cell">
+                <!-- <div class="medium-12 large-12 cell">
                     <div class="row">
                         <div class="columns small-4  medium-4 large-2 left">
                             <label for="confirm">Full Payment</label>
@@ -47,7 +56,7 @@
 
                         
                     </div>
-                </div>
+                </div> -->
 
 
                 <div class="medium-12 cell">
@@ -73,14 +82,33 @@
                             </div>
                         </div>
 
+                        <div class="row collapse">
+                            <label for="amount">  Biyanah Amount</label>
+                            <div class="small-2 columns">
+                                    <input type="number" autocomplete="off"  class="formattedNumber number-input3" id="number-input3" name="biyanah" placeholder="" required>
+                            </div>
+                            <div class="small-7 columns">
+                                <input tabindex="-1" type="text" autocomplete="off" id="" name="remaining_mount_in_words" class="postfix words3" placeholder="AMOUNT IN WORDS" />
+                            </div>
+
+                            <div class="small-3 columns">
+                                <input   type="date" autocomplete="off" name="" id="" class="postfix " placeholder="" />
+                            </div>
+                        </div>
+                        
+
 
                         <div class="row collapse">
                             <label for="amount">Remaining Amount</label>
-                            <div class="small-4 columns">
-                                    <input type="number" autocomplete="off"  class="formattedNumber number-input3" id="number-input3" name="ramount" placeholder="" required>
+                            <div class="small-2 columns">
+                                    <input type="number" autocomplete="off"  class="formattedNumber number-input4" id="" name="ramount" placeholder="" required>
                             </div>
-                            <div class="small-8 columns">
-                                <input tabindex="-1" type="text" autocomplete="off" id="" name="remaining_mount_in_words" class="postfix words3" placeholder="AMOUNT IN WORDS" />
+                            <div class="small-7 columns">
+                                <input tabindex="-1" type="text" autocomplete="off" id="" name="remaining_mount_in_words" class="postfix words4" placeholder="AMOUNT IN WORDS" />
+                            </div>
+
+                            <div class="small-3 columns">
+                                <input   type="date" autocomplete="off" name="" id="" class="postfix " placeholder="" />
                             </div>
                         </div>
                     
@@ -152,7 +180,7 @@
                         <input type="hidden" name="inventory_id" id="inventory_id" >
 
                         <div class="large-12 columns">
-                            <label>Inventory Name: <small>PLOT/HOUSE/SHOP/OUTLET/PLAZA Number</small>
+                            <label>Inventory Name: <small>PLOT/HOUSE/SHOP/OUTLET/PLAZA/Building Number</small>
                                 <input type="text" id="inv-name"  autocomplete="off" name="inv-name"  placeholder="PLOT/HOUSE/SHOP/OUTLET/PLAZA NUMBER" required  value="" />
                                 
                             </label>
@@ -166,6 +194,7 @@
                                     <label>Type:
                                         <select id="type" name="type">
                                             <option selected value="Plot">Plot</option>
+                                            <option value="Hoouse">House</option>
                                             <option value="Shop">Shop</option>
                                             <option value="Apartment">Apartment</option>
                                             <option value="Floor">floor</option>

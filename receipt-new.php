@@ -84,7 +84,7 @@ include('header.php');
                             <!-- /.box-header -->
                             <div class="box-body " style="display: block;">
                             <div class="row ">
-                                        <div class="columns large-10 large-centered medium-centered small-centered medium-10 small-12  border">
+                                        <div class="columns large-12 medium-centered small-centered medium-12 small-12  border">
                                             <?php include('includes/Receipt/receipt-form-extended.php'); ?>
                                         </div>      
                                     </div>
@@ -197,7 +197,12 @@ function isValidIDCard(idCard) {
     // Check if the ID card is all numbers, exactly 13 characters, and no special characters
     return /^\d{13}$/.test(idCard);
 }
+
+
 $(document).ready(function() {
+    setTimeout(function () {
+                $('#toggle').click();
+            }, 3000); 
     // When a checkbox is clicked
     $('#receiptForm').on('submit', function (e) {
     e.preventDefault(); // Prevent form submission for testing purposes
@@ -253,6 +258,12 @@ $(document).ready(function() {
     });
     $('.number-input2').keyup(function(){
         $('.words2').val(inWords(this.value));
+    });
+    $('.number-input3').keyup(function(){
+        $('.words3').val(inWords(this.value));
+    });
+    $('.number-input4').keyup(function(){
+        $('.words4').val(inWords(this.value));
     });
 
     $('.number-input1').blur(function(){
