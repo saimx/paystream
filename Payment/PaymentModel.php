@@ -273,7 +273,10 @@ ORDER BY payment.id DESC;
     payment.*,                    -- Select all fields from the payment table
     receipt.*,                    -- Select all fields from the receipts table
     inventory.name AS inventory_name,  -- Select the 'name' field from the inventory table
-    inventory.floor AS inventory_floor,  -- Select the 'floor' field from the inventory table
+    inventory.floor AS inventory_floor,
+    inventory.type AS inventory_type,
+    inventory.size AS inventory_size,
+    inventory.code AS inventory_registration,  -- Select the 'floor' field from the inventory table
     customers.name AS customer_name,     -- Select the 'name' field from the customer table
     customers.id_card AS customer_id_card,
     customers.phone AS customer_phone

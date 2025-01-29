@@ -209,8 +209,7 @@ function isValidIDCard(idCard) {
 $(document).ready(function() {
     setTimeout(function () {
                 $('#toggle').click();
-                const today = new Date().toISOString().split('T')[0];
-                $('#remaining_date').val(today);
+                
             }, 3000); 
     // When a checkbox is clicked
     $('#receiptForm').on('submit', function (e) {
@@ -281,6 +280,16 @@ $(document).ready(function() {
        $('.words3').val(inWords($('.number-input3').val()));
 
     });
+    //number-input4"
+    
+    $('.number-input4').blur(function(){
+       const result = parseInt(parseInt($('.number-input2').val(), 10) - $('.number-input4').val(), 10);
+       $('.number-input3').val(result);
+       $('.words3').val(inWords($('.number-input3').val()));
+
+    });
+
+
     
     $('input[name="conditional_token"], input[name="confirm_token"]').on('change', function() {
     // Uncheck the other checkbox
@@ -310,6 +319,26 @@ $(document).ready(function() {
             $('.id_card_error').hide();
         }
     });
+
+   // --------------------------------------------
+    $(".number-input4").on("input", function () {
+        if ($(this).val().trim() !== "") {
+            $("#biyanah_date").attr("required", "required");
+        } else {
+            $("#biyanah_date").removeAttr("required");
+        }
+    });
+    // --------------------------------------------
+
+
+    // --------------------------------------------
+    $(".number-input3").on("input", function () {
+        if ($(this).val().trim() !== "") {
+            $("#remaining_date").attr("required", "required");
+        } else {
+            $("#remaining_date").removeAttr("required");
+        }
+    });
     // --------------------------------------------
 
     $('.new-inv').on('click', function () {
@@ -328,14 +357,26 @@ $(document).ready(function() {
         
         const type = $('#type').val();
 
-        if($('#inventory_id').val()==''){
-            $('.inv_error').show().html('Create Inventory with the name first');
-            $('#inv-name').focus();
+        // if($('#inventory_id').val()==''){
+        //     $('.inv_error').show().html('Create Inventory with the name first');
+        //     $('#inv-name').focus();
+        // }
+
+        
+
+        if($('#registration_number').val()==''){
+            $('#registration_number').focus();
+            // showResponse('Registration Number field is empty','error');
+            $('.inv_error').show().html('Registration Number field is empty');
+            $('#registration_number').focus();
+            return;
         }
+        
 
         if($('#number-input').val()==''){
             showResponse('Total Amount field is empty','error');
             $('#number-input').focus();
+            return;
         }
 
        
@@ -343,6 +384,7 @@ $(document).ready(function() {
         if($('#customer_id').val()==''){
             $('.id_card_error').show().html('Create Customer first');
             $('#name').focus();
+            return;
         }
         
         if(InvName ==''){

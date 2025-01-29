@@ -65,7 +65,7 @@
                         <div class="row collapse">
                             <label for="amount">Total Amount</label>
                             <div class="small-4 columns">
-                                    <input  tabindex="0" type="number" autocomplete="off" class="formattedNumber number-input2" id="number-input2" name="famount" placeholder="Enter Amount" required>
+                                    <input  tabindex="0" type="number" min="0" autocomplete="off" class="formattedNumber number-input2" id="number-input2" name="famount" placeholder="Enter Amount" required>
                             </div>
                             <div class="small-8 columns">
                                 <input  tabindex="-1" type="text" autocomplete="off" name="amount_in_words" id="" class="postfix words2" placeholder="AMOUNT IN WORDS" />
@@ -75,12 +75,27 @@
                         <div class="row collapse">
                             <label for="amount">Rceived Amount</label>
                             <div class="small-4 columns">
-                                    <input  type="number" autocomplete="off" class="formattedNumber number-input1" id="number-input1" name="amount" placeholder="Enter Amount" required>
+                                    <input  type="number" min="0" autocomplete="off" class="formattedNumber number-input1" id="number-input1" name="amount" placeholder="Enter Amount" required>
                             </div>
                             <div class="small-8 columns">
                                 <input tabindex="-1" type="text" autocomplete="off" id="" name="receive_mount_in_words" class="postfix words1" placeholder="AMOUNT IN WORDS" />
                             </div>
                         </div>
+
+                        <div class="row collapse">
+                            <label for="amount">  Biyanah Amount</label>
+                            <div class="small-2 columns">
+                                    <input tabindex="-1" type="number" min="0" autocomplete="off"  class="formattedNumber number-input4" id="number-input3" name="biyanah" placeholder="" >
+                            </div>
+                            <div class="small-7 columns">
+                                <input tabindex="-1" type="text" autocomplete="off" id="" name="biyanah_in_words" class="postfix words4 " placeholder="AMOUNT IN WORDS" />
+                            </div>
+
+                            <div class="small-3 columns">
+                                <input tabindex="-1"   type="date" autocomplete="off" name="biyanah_date" id="biyanah_date" class="postfix " placeholder="" />
+                            </div>
+                        </div>
+                    
 
                         
                         
@@ -89,10 +104,10 @@
                         <div class="row collapse">
                             <label for="amount">Remaining Amount</label>
                             <div class="small-2 columns">
-                                    <input type="number" autocomplete="off"  class="formattedNumber number-input3" id="" name="ramount" placeholder="" required>
+                                    <input type="number" min="0" autocomplete="off"  class="formattedNumber number-input3" id="" name="ramount" placeholder="" required>
                             </div>
                             <div class="small-7 columns">
-                                <input tabindex="-1" type="text" autocomplete="off" id="" name="remaining_mount_in_words" class="postfix words3" placeholder="AMOUNT IN WORDS" />
+                                <input tabindex="-1"  type="text" autocomplete="off" id="" name="remaining_mount_in_words" class="postfix words3" placeholder="AMOUNT IN WORDS" />
                             </div>
 
                             <div class="small-3 columns">
@@ -100,20 +115,7 @@
                             </div>
                         </div>
 
-                        <div class="row collapse">
-                            <label for="amount">  Biyanah Amount</label>
-                            <div class="small-2 columns">
-                                    <input tabindex="-1" type="number" autocomplete="off"  class="formattedNumber number-input4" id="number-input3" name="biyanah" placeholder="" >
-                            </div>
-                            <div class="small-7 columns">
-                                <input tabindex="-1" type="text" autocomplete="off" id="" name="biyanah_in_words" class="postfix words4 " placeholder="AMOUNT IN WORDS" />
-                            </div>
-
-                            <div class="small-3 columns">
-                                <input tabindex="-1"   type="date" autocomplete="off" name="biyanah_date" id="" class="postfix " placeholder="" />
-                            </div>
-                        </div>
-                    
+                       
 
                     
                 </div>
