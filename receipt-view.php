@@ -89,7 +89,7 @@ font-size: 20px !important;}
 
     
     .pagingx {
-    height: 300px; /* Adjust this to set the desired space */
+    height: 50px; /* Adjust this to set the desired space */
     /* Optionally, add margin if needed */
     margin-top: 20px; /* Adds space above */
     margin-bottom: 20px; /* Adds space below */
@@ -255,6 +255,11 @@ $payments = $controller->get_payment_with_receipt($_GET['id']);
                             <!-- ----------------------First Check the Type of Payment Biyana full payment or conditional payment  -->
                              <?php
                              $payments[$index]['Due_Date'] = date("Y-m-d", strtotime(($payments[$index]['Due_Date'])));
+                             if(!empty($payments[$index]['ref_cheq_no'])){
+                                $refrence =' with reference <span class="highlight"> ('.$payments[$index]['ref_cheq_no'].')</span>';
+                             }else{
+                                $refrence = '';
+                             }
                               
                              $biyanah = False; 
                              if (!empty($payments[$index]['biyanah']) && $payments[$index]['biyanah'] !== '0') {
@@ -293,16 +298,14 @@ $payments = $controller->get_payment_with_receipt($_GET['id']);
                                             This is to acknowledge receipt of a <?= $pType ?> payment of  <span class="highlight">
                                             <?= $payments[$index]['receive_mount_in_words'] ?></span><span class="highlight">  (PKR <?= number_format($payments[$index]['amount'])?>) </span>
                                             from <span class="highlight"><?=strtoupper($payments[$index]['customer_name'])?></span> on <?= date("Y-m-d", strtotime(($payments[$index]['created_at']))) ?>  with ID Card No:<span class="highlight"> <?=($payments[$index]['customer_id_card'])?></span> as part of the total payment of <span class="highlight"> <?=($payments[$index]['amount_in_words'])?></span> <span class="highlight">(Rs <?=($payments[0]['Due_Amt'])?>)</span>
-                                            as payment for the purchase of  <?= $payments[$index]['inventory_type']; ?> Number <span class="highlight underline"><?=   ($payments[0]['inventory_name'])?></span> Size <span class="highlight underline"><?=   ($payments[0]['inventory_size'])?></span> with Registration Number <span class="highlight underline"><?=   ($payments[0]['inventory_registration'])?></span>  located in <span class="highlight underline"><?=($payments[0]['inventory_floor'])?></span> through <span class="highlight"><?=strtoupper(($payments[$index]['method']))?> </span>with reference  
-                                            <span class="highlight"><?=($payments[$index]['ref_cheq_no'])?></span> on <span class="highlight"> <?=$payments[$index]['Due_Date']?></span>. The remaining balance of <?= $payments[0]['remaining_mount_in_words'] ?></span><span class="highlight"> (PKR <?= number_format($payments[$index]['os_amt'])?>) </span> is yet to be paid on <?= date("Y-m-d", strtotime(($payments[$index]['remaining_date'])))?>.
+                                            as payment for the purchase of <?= $payments[$index]['inventory_type']; ?> Number <span class="highlight underline"><?=   ($payments[0]['inventory_name'])?></span> Size <span class="highlight underline"><?=   ($payments[0]['inventory_size'])?></span> with Registration Number <span class="highlight underline"><?=   ($payments[0]['inventory_registration'])?></span>  located in <span class="highlight underline"><?=($payments[0]['inventory_floor'])?></span> through <span class="highlight"><?=strtoupper(($payments[$index]['method']))?> </span> <?= $refrence ?> on <span class="highlight"> <?=$payments[$index]['Due_Date']?></span>. The remaining balance of <span class="highlight "><?= $payments[0]['remaining_mount_in_words'] ?></span><span class="highlight"> (PKR <?= number_format($payments[$index]['os_amt'])?>) </span> is yet to be paid on <?= date("Y-m-d", strtotime(($payments[$index]['remaining_date'])))?>.
                                         </h3>
                                     <?php }else{ ?>
                                     <h3 class="weigh-normal contex">
                                         This is to acknowledge receipt of an amount of <span class="highlight">
                                         <?= $payments[$index]['receive_mount_in_words'] ?></span><span class="highlight"> (PKR <?= number_format($payments[$index]['amount'])?>) </span>
                                         from <span class="highlight"><?=strtoupper($payments[$index]['customer_name'])?></span> on <?= date("Y-m-d", strtotime(($payments[$index]['created_at']))) ?>  with ID Card No:<span class="highlight"> <?=($payments[$index]['customer_id_card'])?></span> 
-                                        as payment for the purchase of   <?= $payments[$index]['inventory_type']; ?> Number <span class="highlight underline"><?=($payments[0]['inventory_name'])?></span> Size <span class="highlight underline"><?=   ($payments[0]['inventory_size'])?></span> with Registration Number <span class="highlight underline"><?=   ($payments[0]['inventory_registration'])?></span>   located in <span class="highlight underline"><?=($payments[$index]['inventory_floor'])?></span> through <span class="highlight"><?=strtoupper(($payments[$index]['method']))?> </span>with reference  
-                                        <span class="highlight"><?=($payments[$index]['ref_cheq_no'])?></span> on <span class="highlight"> <?=$payments[$index]['Due_Date']?></span>.
+                                        as payment for the purchase of <?= $payments[$index]['inventory_type']; ?> Number <span class="highlight underline"><?=($payments[0]['inventory_name'])?></span> Size <span class="highlight underline"><?=   ($payments[0]['inventory_size'])?></span> with Registration Number <span class="highlight underline"><?=   ($payments[0]['inventory_registration'])?></span>   located in <span class="highlight underline"><?=($payments[$index]['inventory_floor'])?></span> through <span class="highlight"><?=strtoupper(($payments[$index]['method']))?> </span> <?= $refrence ?> on <span class="highlight"> <?=$payments[$index]['Due_Date']?></span>.
                                     </h3>
 
                                     <img class="stamp right" src="img/receipt/fullpaid.png">
