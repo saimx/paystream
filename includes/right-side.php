@@ -71,22 +71,7 @@
                                             <a href="payment-new" title="Create Payment Plan"><i class="fontello-doc-add"></i>  New Installment 
                                             </a>
                                         </li>
-                                        <!-- <li>
 
-                                            <a href="compose.html" title="Compose">Compose</a>
-                                        </li> -->
-                                    </ul>
-                                </li>
-
-                                <li>
-                                    <a class="tooltip-tip" href="#" title="Mail">
-                                        <i class="fontello-doc"></i>
-                                        <span>Receipts</span>
-
-                                    </a>
-
-                                   
-                                    <ul>
                                         <li>
                                             <a href="receipt-new" title="Create Payment Plan"><i class="fontello-doc-add"></i> New Receipt
                                             </a>
@@ -96,13 +81,26 @@
                                             <a href="receipt-all" title="Create Payment Plan"><i class="fontello-contacts"></i> View Receipt
                                             </a>
                                         </li>
-                                        
+
+                                        <li>
+                                            <a href="invoice-new" title="Create Payment Plan"><i class="fontello-doc-add"></i> New Invoice
+                                            </a>
+                                        </li>
+
+
                                         <!-- <li>
 
                                             <a href="compose.html" title="Compose">Compose</a>
                                         </li> -->
                                     </ul>
                                 </li>
+
+                             
+                                
+                            </ul>
+                                </li>
+
+                              
                                 
                             </ul>
                         </div>

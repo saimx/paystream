@@ -203,6 +203,12 @@ class InventoryController
         echo json_encode($inventory);
     }
 
+    public function viewInventory_by_id($id)
+    {
+        $inventory = $this->inventoryModel->getInventoryById($id);
+        return json_encode($inventory);
+    }
+
     // Delete an inventory item by ID
     public function deleteInventory($id)
     {

@@ -2,6 +2,46 @@
 include('header.php');
 
 ?>
+<style>
+        #installmentTable {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            background: url('img/ajmir-group-logo') no-repeat center center;
+            background-size: 50%; /* Adjust the size of the logo */
+           
+        }
+        #installmentTable {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    position: relative;
+    background: url('img/ajmair-logo-bg.png') no-repeat center center;
+    background-size: 200px; /* Adjust logo size */
+}
+
+#installmentTable::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('img/ajmair-logo-bg.png') no-repeat center center;
+    background-size: 400px;
+    opacity: 0.2; /* Adjust opacity */
+    z-index: 1;
+}
+     
+#installmentTable th,
+#installmentTable td {
+ 
+    padding: 15px;
+
+    position: relative;
+    z-index: 2;
+}
+    </style>
 
 <?php 
 
@@ -42,7 +82,7 @@ $inventories = json_decode($inventories, true);
 <!-- Container Begin -->
 <div class="row" style="margin-top:-20px">
 <!-- ---------------------------------------------- -->
-<?php //include('includes/alert.php');?>
+<?php include('includes/alert.php');?>
 <!-- ---------------------------------------------- -->
     <div class="large-6 columns">
         <div class="box">
@@ -114,13 +154,27 @@ $inventories = json_decode($inventories, true);
             <h4> <li style="list-style-type: none;" class="fontello-commerical-building sp-li"></li> Select Inventory</h4>
             <div class="custom-datalist-wrapper">
                 <label for="customerSelect">Select Inventory: </label>
-                <input type="text" list="inventory" id="inventoryInput" class="custom-datalist-input" placeholder="Type to search...">
+                <input type="text" list="inventory" id="inventoryInput" class="custom-datalist-input"  placeholder="<?= empty($inventories) ? 'No inventories available' : 'Type to search...' ?>">
                 <datalist id="inventory" class="custom-datalist">
-                    <?php foreach ($inventories as $item): ?>
-                        <option value="<?php echo htmlspecialchars($item['name']); ?>" data-id="<?php echo $item['id']; ?>" data-code="<?php echo $item['code']; ?>" data-project="<?php echo $item['project']; ?>" data-type="<?php echo $item['type']; ?>" data-size="<?php echo $item['size']; ?>"
-                        data-floor="<?php echo $item['floor']; ?>">
-                            <?php endforeach; ?>
+                    <?php if (!empty($inventories)): ?>
+                        <?php foreach ($inventories as $item): ?>
+                            <option value="<?php echo htmlspecialchars($item['name']); ?>" 
+                                    data-id="<?php echo $item['id']; ?>" 
+                                    data-code="<?php echo $item['code']; ?>" 
+                                    data-project="<?php echo $item['project']; ?>" 
+                                    data-type="<?php echo $item['type']; ?>" 
+                                    data-size="<?php echo $item['size']; ?>"
+                                    data-floor="<?php echo $item['floor']; ?>">
+                            </option>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <option disabled>No inventory available</option>
+                    <?php endif; ?>
                 </datalist>
+
+                <?php if (empty($inventories)): ?>
+                    <p> <a href="#" data-reveal-id="firstModal" class="tiny radius" onclick="setCreateMode()"><i class=" fontello-doc-add" style="font-size:20px">  </i>Create New Inventory</a></p>
+                <?php endif; ?>
             </div>
             <input type="hidden" class="selected_inv_id">
         </div>
@@ -181,9 +235,13 @@ $inventories = json_decode($inventories, true);
                                                 <label for="size">Installments Start Date:</label>
                                                 <input style="font-size:25px" type="date"   value="12/26/2024" class="" id="start_date" name="start_date" required>
                                             </div>
-                                            <div>
+                                            <!-- <div>
                                                 <label for="size">Total Price:</label>
                                                 <input style="font-size:25px" type="text" oninput="formatNumber()"  value="9,035,000" class="formattedNumber" id="total_price" name="total_price" required>
+                                            </div> -->
+                                               <div>
+                                                <label for="size">Installment Amount:</label>
+                                                <input style="font-size:25px" type="text" oninput="formatNumber()"  value="" class="formattedNumber" id="installment_amount" name="installment_amount" required>
                                             </div>
 
                                             <div>
@@ -200,12 +258,12 @@ $inventories = json_decode($inventories, true);
                                             <div class="row">
                                                 <div class="large-8 columns">
                                                     <label for="size">Processing Fee:</label>
-                                                    <input style="font-size:25px" type="text" oninput="formatNumber()"  value="60,000" class="formattedNumber" id="processing_fee" name="processing_fee" required>
+                                                    <input style="font-size:25px" type="text" oninput="formatNumber()"  value="60,000" class="formattedNumber" id="processing_fee" name="processing_fee" >
                                                  </div>
                                                  <div class="large-4 columns switch-side">
                                                     <div class="switch">
                                                         <small>Disable/Enable</small><br>
-                                                        <input id="processingcheckbox" checked type="checkbox" >
+                                                        <input id="processingcheckbox"  type="checkbox" >
                                                         <label for="processingcheckbox">Disable</label>
                                                     </div>
                                                  </div>   
@@ -261,8 +319,8 @@ $inventories = json_decode($inventories, true);
                                             
                                             <div class="row">
                                                 <div class="large-8 columns">
-                                                    <label for="size">Last Payment :</label>
-                                                    <input style="font-size:25px" type="text" required oninput="formatNumber()"  value="600000" class="formattedNumber" id="last_payment" name="balloting_fee"  >
+                                                    <label for="size">On Posession:</label>
+                                                    <input style="font-size:25px" type="text"  oninput="formatNumber()"  value="600000" class="formattedNumber" id="last_payment" name="balloting_fee"  >
                                                  </div>
                                                  <div class="large-4 columns switch-side">
                                                     <div class="switch">
@@ -275,7 +333,7 @@ $inventories = json_decode($inventories, true);
 
                                             <div class="row">
                                                 <div class="large-8 columns">
-                                                    <label for="size">Balloting :</label>
+                                                    <label for="size">Digging :</label>
                                                     <input style="font-size:25px" type="text" oninput="formatNumber()"  value="" class="formattedNumber" id="balloting_fee" name="balloting_fee"  >
                                                  </div>
                                                  <div class="large-4 columns switch-side">
@@ -369,8 +427,8 @@ $inventories = json_decode($inventories, true);
                                                             <h3 class="centered-text">Total Pricing Plan: <span class="total_value"></span></h3>
                                                             <h6 >Number of Installments: <span class="number_of_insatllemt"></span></h6>
                                                             <h6 >Down Payment: <span class="down_payment"></span></h6>
-                                                            <h6 class="printedx">Print: <a style="font-size:12px" id="printButton" href="#" class="button tiny bg-light-green radius"><i class="fontello-print"></i></a></h6>
-                                                            <table id="installmentTable" style="width:100%">
+                                                            <h6 class="printedx">Print: <a style="font-size:12px" id="downloadPdf" href="#" class="button tiny bg-light-green radius"><i class="fontello-download"></i></a></h6>
+                                                            <table id="installmentTable" class="table table-striped table-bordered display inventory-table dataTable no-footer" style="width:100%">
                                                                 <thead>
                                                                     <th>Number of Months</th>
                                                                     <th>Payment Description</th>
@@ -410,7 +468,11 @@ $inventories = json_decode($inventories, true);
 
                     <!-- End of Box -->
 
+                    <div id="firstModal" class="reveal-modal open" data-reveal="" >
+                            <?php include 'includes/inventory-form.php'; ?>
 
+                        </div>
+                        
                     
 
 
@@ -503,7 +565,37 @@ $inventories = json_decode($inventories, true);
 
         setTimeout(function () {
                 $('#toggle').click();
-            }, 3000); 
+            }, 3000);
+            
+            
+            
+    $("#inventoryForm").submit(function (event) {
+            event.preventDefault();
+
+            const formData = $(this).serialize();
+
+            $.ajax({
+                url: 'Inventory/InventoryController.php',
+                method: 'POST',
+                data: formData,
+                success: function (response) {
+                   
+                    
+                    const result = JSON.parse(response);
+                    console.log(result.message);
+                    alert(result.message);
+                    setTimeout(function () {
+                       window.location.reload();
+                    }, 1000);
+                    
+                    // Refresh the table
+                    // resetForm();     // Reset the form
+                },
+                error: function () {
+                    alert("Failed to process the request.");
+                }
+            });
+        });
 // -----------------------------------Printing code-----------------
     $('#printButton').on('click', function (event) {
         event.preventDefault(); // Prevent default button behavior
@@ -616,9 +708,9 @@ $inventories = json_decode($inventories, true);
                 Installment_No: parseInt($(this).find('td:eq(0)').text()),
                 Payment_Description: $(this).find('td:eq(1)').text(),
                 Due_Date: $(this).find('td:eq(2)').text(),
-                Due_Amt: parseFloat($(this).find('td:eq(3)').text()),
+                Due_Amt: parseFloat($(this).find('td:eq(3)').text().replace(/,/g, '')),
                 Receipt_Amt: 0,
-                OS_Amt: parseFloat($(this).find('td:eq(3)').text()),
+                OS_Amt: parseFloat($(this).find('td:eq(3)').text().replace(/,/g, '')),
                 Discount_Amt: 0,
                 Inventory_id: 1 // Replace with dynamic value if applicable
             };
@@ -636,6 +728,7 @@ $inventories = json_decode($inventories, true);
                 inventoryId: inventoryId,
                 customerId: customerId
              },
+             
             dataType: 'json',
             success: function (response) {
                 // $('.result-box').show('fast');
@@ -645,11 +738,13 @@ $inventories = json_decode($inventories, true);
                 }, 1000);
                 if (response.status === 'success') {
                     // $("#result").html(response.message);
-                    showResponse(response.message,'success');
+                    window.location.href = window.location.origin + "/ajmair/inventory-payment?id="+inventoryId;
+                    //showResponse(response.message,'success');
                     // alert('Payments saved successfully!');
                 } else {
                     showResponse(response.message,'error');
-                    // $("#result").html('Error: ' + response.message);
+                    
+                     $("#result").html('Error: ' + response.message);
                 }
             },
             error: function (xhr, status, error) {
@@ -710,8 +805,10 @@ $inventories = json_decode($inventories, true);
         // debugger;
         // Get form values
         //
+        debugger;
         $('.results').show('fast');
-        const totalPrice = parseFormattedNumber($('#total_price').val());
+       
+        const installment_amount = parseFormattedNumber($('#installment_amount').val());
         const downPayment = parseFormattedNumber($('#down_payment').val());
         var last_payment = parseFormattedNumber($('#last_payment').val());
         var processing_fee = parseFormattedNumber($('#processing_fee').val());
@@ -754,9 +851,12 @@ $inventories = json_decode($inventories, true);
         var install_months = (numberOfInstallments-interval_instalment).toFixed(0);
         var interval_total_amount = intervalAmount * interval_instalment;
         console.log(interval_total_amount);
-        const remainingAmount = totalPrice - (downPayment + processing_fee + last_payment + interval_total_amount + balloting_fee + balloon_fee);
+        // const totalPrice = parseFormattedNumber($('#total_price').val());
+        // const remainingAmount = totalPrice - (downPayment + processing_fee + last_payment + interval_total_amount + balloting_fee + balloon_fee);
         // Calculate the regular installment amount
-        const installmentAmount = remainingAmount / (install_months);
+        // const installmentAmount = remainingAmount / (install_months);
+
+        const installmentAmount = installment_amount;
 
         // Clear previous results
         const tableBody = $('#installmentTable tbody');
@@ -785,7 +885,7 @@ $inventories = json_decode($inventories, true);
                 <td>${i+1}</td>
                 <td>${payment_details}</td>
                 <td>${installmentDate.toLocaleDateString()}</td>
-                <td>${currentInstallmentAmount.toFixed(0)}</td>
+                <td>${currentInstallmentAmount.toLocaleString()}</td>
             </tr>`;
             tableBody.append(newRow);
             $date = installmentDate.toLocaleDateString();
@@ -799,7 +899,7 @@ $inventories = json_decode($inventories, true);
             <td>-</td>
             <td>Down payment</td>
             <td>${startDate.toLocaleDateString()}</td>
-            <td>${downPayment.toFixed(0)}</td>
+            <td>${downPayment.toLocaleString()}</td>
         </tr>`;
             grand_total = grand_total+downPayment;
             tableBody.prepend(downPaymentRow); // Add down payment row at the top
@@ -809,7 +909,7 @@ $inventories = json_decode($inventories, true);
             <td>-</td>
             <td>Balloting payment</td>
             <td>${startDate.toLocaleDateString()}</td>
-            <td>${balloting_fee.toFixed(0)}</td>
+            <td>${balloting_fee.toLocaleString()}</td>
         </tr>`;
         if($('#ballotingecheckbox').is(':checked')){
             grand_total = grand_total+balloting_fee;
@@ -820,7 +920,7 @@ $inventories = json_decode($inventories, true);
             <td>0</td>
             <td>Balloon Payment</td>
             <td>${startDate.toLocaleDateString()}</td>
-            <td>${balloon_fee.toFixed(0)}</td>
+            <td>${balloon_fee.toLocaleString()}</td>
         </tr>`;
         if($('#ballotingecheckbox').is(':checked')){
             grand_total = grand_total+balloon_fee;
@@ -833,12 +933,12 @@ $inventories = json_decode($inventories, true);
             <td>0</td>
             <td>Processing Fee</td>
             <td>${startDate.toLocaleDateString()}</td>
-            <td>${processing_fee.toFixed(0)}</td>
+            <td>${processing_fee.toLocaleString()}</td>
         </tr>`;
         
         if($('#processingcheckbox').is(':checked')){
             grand_total = grand_total+processing_fee;
-            tableBody.prepend(processingFeeRow);  
+            tableBody.prepend(processingFeeRow.toLocaleString());  
         }
 
 
@@ -846,18 +946,18 @@ $inventories = json_decode($inventories, true);
             <td>0</td>
             <td>Last Payment </td>
             <td>${$date}</td>
-            <td>${last_payment.toFixed(0)}</td>
+            <td>${last_payment.toLocaleString()}</td>
         </tr>`;
         
         if($('#lastpaymentcheckbox').is(':checked')){
             grand_total = grand_total+last_payment;
-            tableBody.append(lastpaymentRow);  
+            tableBody.append(lastpaymentRow.toLocaleString());  
         }
 
         console.log('Grand Total '+ grand_total);
-        $('.total_value').text(grand_total.toFixed(0));
-        $('.number_of_insatllemt').text(numberOfInstallments.toFixed(0));
-        $('.down_payment').text(downPayment.toFixed(0));
+        $('.total_value').text(grand_total.toLocaleString());
+        $('.number_of_insatllemt').text(numberOfInstallments.toLocaleString());
+        $('.down_payment').text(downPayment.toLocaleString());
 
     });
   
@@ -1034,6 +1134,42 @@ $inventories = json_decode($inventories, true);
         });
     })(jQuery);
     </script>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+    document.getElementById('downloadPdf').addEventListener('click', () => {
+        const element = document.querySelector('.contentToPrint');
+
+        html2canvas(element, {
+            scale: 2, // Higher scale for better quality
+            useCORS: true,
+        }).then((canvas) => {
+            const imgData = canvas.toDataURL('image/jpeg', 1);
+
+            // Initialize jsPDF
+            const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+            const imgWidth = 210; // A4 width in mm
+            const pageHeight = 297; // A4 height in mm
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            let position = 0;
+            let y = 0; // Y position for the image
+
+            while (position < imgHeight) {
+                pdf.addImage(imgData, 'JPEG', 0, y, imgWidth, imgHeight);
+
+                position += pageHeight; // Move to the next page
+                if (position < imgHeight) {
+                    pdf.addPage();
+                    y = -pageHeight; // Reset Y position for the next page
+                }
+            }
+
+            pdf.save('Provisional_Payment_Plan.pdf');
+        });
+    });
+</script>
+
 
 
 

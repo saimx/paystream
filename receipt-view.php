@@ -158,8 +158,7 @@ $payments = $controller->get_payment_with_receipt($_GET['id']);
                                     </span>
                                 </div>
                                
-                                    <a href="#"><span class="entypo-home"></span></a>
-                                    
+                                   
                                     
 
                                 

@@ -122,6 +122,7 @@ public function savePayments()
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !(isset($_GET['action']))) {
     define('ROOT_PATH', __DIR__);
+    define('SECURE_ACCESS','1');
     require_once ROOT_PATH . '/../../../config.php';
     $controller = new PaymentController();
     $controller->savePayments();

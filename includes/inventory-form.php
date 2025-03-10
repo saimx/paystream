@@ -17,7 +17,17 @@
     </div>
     <div>
         <label for="type">Type:</label>
-        <input type="text" value="apartment" id="type" name="type" required>
+     
+     
+                                        <select id="type" name="type">
+                                            <option selected value="Plot">Plot</option>
+                                            <option value="Shop">Shop</option>
+                                            <option value="Apartment">Apartment</option>
+                                            <option value="Floor">floor</option>
+                                            <option value="Outlet">Outlet</option>
+                                            <option value="Plaza">Plaza</option>
+                                            <option value="Building">Building</option>
+                                        </select>
     </div>
     <div>
         <label for="project">Project:</label>
@@ -36,5 +46,5 @@
         <label for="floor">Floor:</label>
         <input type="text" value="03" id="floor" name="floor">
     </div>
-    <button type="submit" id="submitButton">Save</button>
+    <button class="button tiny" type="submit" id="submitButton">Save</button>
 </form>

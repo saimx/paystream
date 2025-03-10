@@ -2,16 +2,67 @@
 include('header.php');
 
 ?>
+
+<style>
+        #    {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            background: url('img/ajmir-group-logo') no-repeat center center;
+            background-size: 50%; /* Adjust the size of the logo */
+           
+        }
+        #installmentTable {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    position: relative;
+    background: url('img/ajmair-logo-bg.png') no-repeat center center;
+    background-size: 200px; /* Adjust logo size */
+}
+
+#installmentTable::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('img/ajmair-logo-bg.png') no-repeat center center;
+    background-size: 400px;
+    opacity: 0.2; /* Adjust opacity */
+    z-index: 1;
+}
+     
+#installmentTable th,
+#installmentTable td {
+ 
+    padding: 15px;
+
+    position: relative;
+    z-index: 2;
+}
+    </style>
 <?php
 
 // Define the URL for the action
 
 
-//Inventory/InventoryController.php?action=view_all
 
+require_once 'Inventory/InventoryController.php';
 require_once 'Payment/PaymentController.php';
 $controller = new PaymentController();
 $payments = $controller->get_payment_with_customer($_GET['id']);
+
+$controller = new InventoryController();
+$inventoryId = intval($_GET['id']);
+$inventoryData = $controller->viewInventory_by_id($inventoryId);
+$inventory = json_decode($inventoryData, true);
+
+if (!$inventory) {
+    die("No inventory found for the given ID.");
+}
+
 // echo'<pre>';
 // print_r($payments);
 // die; 
@@ -112,7 +163,11 @@ $payments = $controller->get_payment_with_customer($_GET['id']);
                                                                         <i class="fontello-print"></i> Print
                                                                     </a>
                                                                     <a href="#" onclick="downloadTableAsExcel()" id="downloadButton" class="button tiny radius">
-                                                                        <i class="fontello-download"></i> Download
+                                                                        <i class="fontello-download"></i> Download to Excel
+                                                                    </a>
+
+                                                                    <a href="#"  id="downloadPdf" class="button tiny radius">
+                                                                        <i class="fontello-download"></i> Download as PDF
                                                                     </a>
                                                                 </h6>
                                                             </div>
@@ -150,12 +205,20 @@ $payments = $controller->get_payment_with_customer($_GET['id']);
                                                     
                                                     ?>
                                                     <tr>  
-                                                    <td><h5 class="inventory_name">fc-230</h5>  </td>
+                                                        <td><?php echo htmlspecialchars(ucfirst($inventory['name'])); ?></td>
+                                                        <td><?php echo htmlspecialchars(ucfirst($inventory['project'])); ?></td>
+                                                        <td><?php echo htmlspecialchars(ucfirst($inventory['type'])); ?></td>
+                                                        <td><?php echo htmlspecialchars(ucfirst($inventory['size'])); ?></td>
+                                                        <td><?php echo htmlspecialchars(ucfirst($inventory['floor'])); ?></td>
+                                                        <td><?php echo htmlspecialchars(ucfirst($inventory['code'])); ?></td>
+
+
+                                                    <!-- <td><h5 class="inventory_name">fc-230</h5>  </td>
                                                     <td><span class="inventory_project">pearl-one</span></td>
                                                     <td><span class="inventory_type">apartment</span></td>
                                                     <td><span class="inventory_size">150</span></td>
                                                     <td><span class="inventory_floor">3</span>th</td>
-                                                    <td><span class="inventory_code">FC-ABS-001</span></td>
+                                                    <td><span class="inventory_code">FC-ABS-001</span></td> -->
                                                     </tr>
                                                     <?php
                                                         // 
@@ -325,6 +388,9 @@ $payments = $controller->get_payment_with_customer($_GET['id']);
                                                                                         echo '<td style="font-size:9px"><a download href="' . ($receipt['file'] ?? '-') . '">' . number_format($receipt['amount'], 2) . '</a></td>';
                                                                                         echo '<td style="font-size: 9px;">' . ($formatted_date_time ?? '-') . '</td>';
                                                                                         echo '<td style="font-size: 9px;">' . ($receipt['receipt_id'] ?? '-') . '</td>';
+                                                                                        $receipt_url = "http://localhost/paystream/receipt-view?id=" . urlencode($payment['id']);
+                                                                                        echo "<td style='font-size: 9px;'><a target='_blank' href=\"$receipt_url\">View Receipt</a></td>";
+
                                                                                         echo '</tr>';
                                                                                     }
                                                                                     echo '</tbody>';
@@ -486,6 +552,28 @@ function downloadTableAsExcel() {
     <!-- page script -->
 
 
+
+
+    
+<script>
+    document.addEventListener('DOMContentLoaded', function (){
+        
+        const noteInput = document.getElementById('description');
+
+        
+
+        if (savedValueNote) {
+            noteInput.value = savedValueNote; // Set the saved value
+        }
+       
+
+        noteInput.addEventListener('input', function () {
+            localStorage.setItem('noteValue', noteInput.value);
+        });
+
+       
+    });
+</script>
 <script>
  function setCreateMode() {
         // Remove the hidden ID field if it exists
@@ -849,6 +937,44 @@ function downloadTableAsExcel() {
      
     })(jQuery);
     </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+    document.getElementById('downloadPdf').addEventListener('click', () => {
+        const element = document.querySelector('.contentToPrint');
+
+        html2canvas(element, {
+            scale: 2, // Higher scale for better quality
+            useCORS: true,
+        }).then((canvas) => {
+            const imgData = canvas.toDataURL('image/jpeg', 1);
+
+            // Initialize jsPDF
+            const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+            const imgWidth = 210; // A4 width in mm
+            const pageHeight = 297; // A4 height in mm
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            let position = 0;
+            let y = 0; // Y position for the image
+
+            while (position < imgHeight) {
+                pdf.addImage(imgData, 'JPEG', 0, y, imgWidth, imgHeight);
+
+                position += pageHeight; // Move to the next page
+                if (position < imgHeight) {
+                    pdf.addPage();
+                    y = -pageHeight; // Reset Y position for the next page
+                }
+            }
+
+            pdf.save('Provisional_Payment_Plan.pdf');
+        });
+    });
+</script>
+
+
 
 
 

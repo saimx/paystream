@@ -3,6 +3,12 @@
         <input type="hidden" value="" name="payment-id" class="payment-id"> 
         <input type="hidden" clas="customerId" name='customerId' value="<?= $payments[0]['customer_id'];?>"/>
             <div class="grid-x grid-padding-x">
+
+            <div class="medium-12 cell">
+                    <label for="amount">ISSUED BY:
+                        <input type="text" readonly class="" id="" value="<?= $_SESSION['Name'] ?>" name="issued" placeholder="Enter Amount" required>
+                    </label>
+                </div>
                 
                 <div class="medium-12 cell">
                     <label for="amount">Amount
@@ -31,8 +37,14 @@
                         <textarea id="description" name="note" placeholder="Enter description"></textarea>
                     </label>
                 </div>
+
+                <div class="medium-12 cell">
+                                        <label for="description"><i class="fontello-doc"></i>Additional Note
+                                            <textarea id="description" name="note" placeholder="Enter description"></textarea>
+                                        </label>
+                                    </div>
                 <div class="medium-12 cell ">
-                    <input type="submit" class="button" value="Submit">
+                    <input type="submit" class="button tiny " value="Submit">
                 </div>
                         <div class="row">
                             <div class="large-12 columns">
@@ -53,8 +65,12 @@
                                         </div>
                                     </div>
                                     </label>
+
+                                   
                             </div>        
                         </div>
             </div>
+
+
         </form>
         <div id="responseMessage" class="callout" style="display:none;"></div>

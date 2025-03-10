@@ -243,6 +243,42 @@ ORDER BY payment.id DESC;
     
 
 
+    public function getPaymentAlongReceiptsByReceiptId($receiptId)
+{
+    $query = "SELECT
+        payment.*,                    -- Select all fields from the payment table
+        receipt.*,                    -- Select all fields from the receipts table
+        inventory.name AS inventory_name,  -- Select the 'name' field from the inventory table
+        inventory.floor AS inventory_floor,  -- Select the 'floor' field from the inventory table
+        customers.name AS customer_name,     -- Select the 'name' field from the customer table
+        customers.id_card AS customer_id_card,
+        customers.phone AS customer_phone
+    FROM
+        receipts AS receipt
+    JOIN
+        payment AS payment
+    ON
+        payment.id = receipt.payment_id
+    LEFT JOIN
+        inventory AS inventory
+    ON
+        payment.Inventory_id = inventory.id
+    LEFT JOIN
+        customers AS customers
+    ON
+        payment.customer_id = customers.id
+    WHERE
+        receipt.id = :receipt_id;
+    ";
+
+    $stmt = $this->pdo->prepare($query);
+    $stmt->bindParam(':receipt_id', $receiptId, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
     public function getPaymentAlongReceipts($paymentId)
     {
 
