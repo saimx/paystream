@@ -275,15 +275,30 @@ $(document).ready(function() {
     });
 
     $('.number-input1').blur(function(){
-       const result = parseInt(parseInt($('.number-input2').val(), 10) - $('.number-input1').val(), 10);
+
+       
+       const value = $('.number-input4').val().trim();
+       if (value === "") {
+         result = parseInt(parseInt($('.number-input2').val(), 10) - $('.number-input1').val(), 10);
+       }else{
+            input4 = parseInt($('.number-input4').val().trim(), 10);
+             result = parseInt(parseInt($('.number-input2').val(), 10) - $('.number-input1').val(), 10)-input4;
+        }
+
        $('.number-input3').val(result);
        $('.words3').val(inWords($('.number-input3').val()));
 
     });
+
+
     //number-input4"
     
     $('.number-input4').blur(function(){
-       const result = parseInt(parseInt($('.number-input2').val(), 10) - $('.number-input4').val(), 10);
+        const result = 
+    parseInt($('.number-input2').val(), 10) - 
+    parseInt($('.number-input4').val(), 10) - 
+    parseInt($('.number-input1').val(), 10);
+
        $('.number-input3').val(result);
        $('.words3').val(inWords($('.number-input3').val()));
 
@@ -497,6 +512,22 @@ $(document).ready(function() {
 
     });
     //
+
+               
+    $("#fullpayment").on("change", function() {
+    if ($(this).is(":checked")) {
+        // If checked, clear values and set readonly
+        $("input[name='ramount'], input[name='biyanah']")
+            .val("")
+            .prop("readonly", true);
+    } else {
+        // If unchecked, remove readonly
+        $("input[name='ramount'], input[name='biyanah']")
+            .prop("readonly", false);
+    }
+});
+
+    
 
     $('#inv-name').on('blur', function () {
         $('.inventory-results').hide();

@@ -35,8 +35,8 @@ include('header.php');
     }
     .contex{
         text-transform: none !important;
-        line-height: 50px;
-
+       font-size: 20px;
+        line-height: 40px;
         text-align: justify;
     
     }
@@ -103,7 +103,7 @@ font-size: 20px !important;}
             width: 120px !important;
         }
         .contex{
-            line-height: 35px !important;
+            line-height: 30px !important;
         }
         .qr-img{
             bottom: -135px !important;
@@ -262,17 +262,7 @@ $payments = $controller->get_payment_with_receipt($_GET['id']);
                              }
                               
                              $biyanah = False; 
-                             if (!empty($payments[$index]['biyanah']) && $payments[$index]['biyanah'] !== '0') {
-                                echo'<h1 class="nunito bolder center-text">Biyanah Payment Receipt</h1>';
-                                $biyanah = True;
-                                $pType = 'Biyanah';
-                                $payments[$index]['biyanah_date']=date("Y-m-d", strtotime(($payments[$index]['biyanah_date'])));
-                                $payments[$index]['receive_mount_in_words'] = $payments[$index]['biyanah_in_words'];
-                                $payments[$index]['amount'] = $payments[$index]['biyanah'];
-                                $payments[$index]['Due_Date'] = $payments[$index]['biyanah_date'];
-                                
-
-                             }elseif($payments[$index]['token_type']=='conditional-token'){
+                             if($payments[$index]['token_type']=='conditional-token'){
                                 $biyanah = False; 
                                 // [token_type] => conditional-token
                                 
@@ -281,8 +271,12 @@ $payments = $controller->get_payment_with_receipt($_GET['id']);
                              }elseif($payments[$index]['token_type']=='confirm-token'){
                                     echo'<h1 class="nunito bolder center-text">Confirmed Token Payment Receipt</h1>';
                                     $pType = 'Confirmed Token';
+                            }elseif($payments[$index]['token_type']=='full-payment'){
+                                    echo'<h1 class="nunito bolder center-text">Full Payment Receipt</h1>';
+                                    $pType = 'Full Payment';
+                                
                             }else{
-                                    echo'<h1 class="nunito bolder center-text"> Payment Receipt</h1>';
+                                    echo'<h1 class="nunito bolder center-text"> Payment Confirmation Receipt</h1>';
                                     $pType = '';
                             }
                              
@@ -298,7 +292,10 @@ $payments = $controller->get_payment_with_receipt($_GET['id']);
                                             This is to acknowledge receipt of a <?= $pType ?> payment of  <span class="highlight">
                                             <?= $payments[$index]['receive_mount_in_words'] ?></span><span class="highlight">  (PKR <?= number_format($payments[$index]['amount'])?>) </span>
                                             from <span class="highlight"><?=strtoupper($payments[$index]['customer_name'])?></span> on <?= date("Y-m-d", strtotime(($payments[$index]['created_at']))) ?>  with ID Card No:<span class="highlight"> <?=($payments[$index]['customer_id_card'])?></span> as part of the total payment of <span class="highlight"> <?=($payments[$index]['amount_in_words'])?></span> <span class="highlight">(Rs <?=($payments[0]['Due_Amt'])?>)</span>
-                                            as payment for the purchase of <?= $payments[$index]['inventory_type']; ?> Number <span class="highlight underline"><?=   ($payments[0]['inventory_name'])?></span> Size <span class="highlight underline"><?=   ($payments[0]['inventory_size'])?></span> with Registration Number <span class="highlight underline"><?=   ($payments[0]['inventory_registration'])?></span>  located in <span class="highlight underline"><?=($payments[0]['inventory_floor'])?></span> through <span class="highlight"><?=strtoupper(($payments[$index]['method']))?> </span> <?= $refrence ?> on <span class="highlight"> <?=$payments[$index]['Due_Date']?></span>. The remaining balance of <span class="highlight "><?= $payments[0]['remaining_mount_in_words'] ?></span><span class="highlight"> (PKR <?= number_format($payments[$index]['os_amt'])?>) </span> is yet to be paid on <?= date("Y-m-d", strtotime(($payments[$index]['remaining_date'])))?>.
+                                            as payment for the purchase of <?= $payments[$index]['inventory_type']; ?> Number <span class="highlight underline"><?=   ($payments[0]['inventory_name'])?></span> Size <span class="highlight underline"><?=   ($payments[0]['inventory_size'])?></span> with Registration Number <span class="highlight underline"><?=   ($payments[0]['inventory_registration'])?></span>  located in <span class="highlight underline"><?=($payments[0]['inventory_floor'])?></span> through <span class="highlight"><?=strtoupper(($payments[$index]['method']))?> </span> <?= $refrence ?> on <span class="highlight"> <?=$payments[$index]['Due_Date']?></span>.
+                                            <hr>
+                                            <div class="context">As per our mutual agreement Biyanah will be made on the <span class="highlight "> <?= date("l, jS F Y", strtotime($payments[0]['biyanah_date']));   ?></span> with an amount of <span class="highlight "><?=($payments[0]['biyanah_in_words'])?> (PKR <?= number_format($payments[$index]['biyanah'])?>)</span> </span> 
+                                            and the remaining balance of <span class="highlight "><?= $payments[0]['remaining_mount_in_words'] ?></span><span class="highlight"> (PKR <?= number_format($payments[$index]['os_amt'])?>) </span> is yet to be paid on <span class="highlight"><?= date("l, jS F Y", strtotime($payments[0]['remaining_date'])) ?></span>.</div>
                                         </h3>
                                     <?php }else{ ?>
                                     <h3 class="weigh-normal contex">

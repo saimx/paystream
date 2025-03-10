@@ -31,7 +31,11 @@
     <label for="confirm">CONFIRM TOKEN</label>
     <input type="checkbox" id="confirm" value="confirm-token" name="token_type">
 </div>
-                        
+             
+<div class="columns small-4 medium-4 large-2 left">
+    <label for="confirm">Full  Payment</label>
+    <input type="checkbox" id="fullpayment" value="full-payment" name="token_type">
+</div>
                         
 
                         <div class="columns small-12 medium-12   large-6 left condition hidden">
