@@ -617,7 +617,7 @@ $(document).ready(function() {
             const idCard = $(this).val();
             if(idCard ==''){
                             $('.id_card_error').show().html('ID card Field is empty');
-                            $('#id_card').focus();
+                            //$('#id_card').focus();
                             return;
             }else{
                 $('.id_card_error').hide();

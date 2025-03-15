@@ -279,9 +279,10 @@ $payments = $controller->get_payment_with_receipt($_GET['id']);
                                     echo'<h1 class="nunito bolder center-text"> Payment Confirmation Receipt</h1>';
                                     $pType = '';
                             }
+                           
                              
                              ?>
-                           
+                            
 
                             <!-- ----------------------------------------- -->
                             <div class="row line-h">
@@ -291,17 +292,19 @@ $payments = $controller->get_payment_with_receipt($_GET['id']);
                                         <h3 class="weigh-normal contex">
                                             This is to acknowledge receipt of a <?= $pType ?> payment of  <span class="highlight">
                                             <?= $payments[$index]['receive_mount_in_words'] ?></span><span class="highlight">  (PKR <?= number_format($payments[$index]['amount'])?>) </span>
-                                            from <span class="highlight"><?=strtoupper($payments[$index]['customer_name'])?></span> on <?= date("Y-m-d", strtotime(($payments[$index]['created_at']))) ?>  with ID Card No:<span class="highlight"> <?=($payments[$index]['customer_id_card'])?></span> as part of the total payment of <span class="highlight"> <?=($payments[$index]['amount_in_words'])?></span> <span class="highlight">(Rs <?=($payments[0]['Due_Amt'])?>)</span>
+                                            from <span class="highlight"><?=strtoupper($payments[$index]['customer_name'])?></span> on <span class="highlight"><?= date("l, jS F Y", strtotime(($payments[$index]['created_at']))) ?></span>  with ID Card No:<span class="highlight"> <?=($payments[$index]['customer_id_card'])?></span> as part of the total payment of <span class="highlight"> <?=($payments[$index]['amount_in_words'])?></span> <span class="highlight">(Rs <?=($payments[0]['Due_Amt'])?>)</span>
                                             as payment for the purchase of <?= $payments[$index]['inventory_type']; ?> Number <span class="highlight underline"><?=   ($payments[0]['inventory_name'])?></span> Size <span class="highlight underline"><?=   ($payments[0]['inventory_size'])?></span> with Registration Number <span class="highlight underline"><?=   ($payments[0]['inventory_registration'])?></span>  located in <span class="highlight underline"><?=($payments[0]['inventory_floor'])?></span> through <span class="highlight"><?=strtoupper(($payments[$index]['method']))?> </span> <?= $refrence ?> on <span class="highlight"> <?=$payments[$index]['Due_Date']?></span>.
+                                            <?php if (!empty($payments[$index]['biyanah']) && $payments[$index]['biyanah'] != 0) { ?>
                                             <hr>
                                             <div class="context">As per our mutual agreement Biyanah will be made on the <span class="highlight "> <?= date("l, jS F Y", strtotime($payments[0]['biyanah_date']));   ?></span> with an amount of <span class="highlight "><?=($payments[0]['biyanah_in_words'])?> (PKR <?= number_format($payments[$index]['biyanah'])?>)</span> </span> 
                                             and the remaining balance of <span class="highlight "><?= $payments[0]['remaining_mount_in_words'] ?></span><span class="highlight"> (PKR <?= number_format($payments[$index]['os_amt'])?>) </span> is yet to be paid on <span class="highlight"><?= date("l, jS F Y", strtotime($payments[0]['remaining_date'])) ?></span>.</div>
+                                            <?php } ?>
                                         </h3>
                                     <?php }else{ ?>
                                     <h3 class="weigh-normal contex">
                                         This is to acknowledge receipt of an amount of <span class="highlight">
                                         <?= $payments[$index]['receive_mount_in_words'] ?></span><span class="highlight"> (PKR <?= number_format($payments[$index]['amount'])?>) </span>
-                                        from <span class="highlight"><?=strtoupper($payments[$index]['customer_name'])?></span> on <?= date("Y-m-d", strtotime(($payments[$index]['created_at']))) ?>  with ID Card No:<span class="highlight"> <?=($payments[$index]['customer_id_card'])?></span> 
+                                        from <span class="highlight"><?=strtoupper($payments[$index]['customer_name'])?></span> on <span class="highlight"><?= date("l, jS F Y", strtotime(($payments[$index]['created_at']))) ?></span>  with ID Card No:<span class="highlight"> <?=($payments[$index]['customer_id_card'])?></span> 
                                         as payment for the purchase of <?= $payments[$index]['inventory_type']; ?> Number <span class="highlight underline"><?=($payments[0]['inventory_name'])?></span> Size <span class="highlight underline"><?=   ($payments[0]['inventory_size'])?></span> with Registration Number <span class="highlight underline"><?=   ($payments[0]['inventory_registration'])?></span>   located in <span class="highlight underline"><?=($payments[$index]['inventory_floor'])?></span> through <span class="highlight"><?=strtoupper(($payments[$index]['method']))?> </span> <?= $refrence ?> on <span class="highlight"> <?=$payments[$index]['Due_Date']?></span>.
                                     </h3>
 
