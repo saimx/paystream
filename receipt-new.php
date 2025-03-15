@@ -84,7 +84,7 @@ include('header.php');
                             <!-- /.box-header -->
                             <div class="box-body " style="display: block;">
                             <div class="row ">
-                                        <div class="columns large-10 large-centered medium-centered small-centered medium-10 small-12  border">
+                                        <div class="columns large-12 medium-centered small-centered medium-12 small-12  border">
                                             <?php include('includes/Receipt/receipt-form-extended.php'); ?>
                                         </div>      
                                     </div>
@@ -191,13 +191,26 @@ include('header.php');
     });
 </script>
 <script>
+    // Get today's date in the format yyyy-mm-dd
+    
+    
+    // Set the value of the input field
+
+</script>
+<script>
     
 <?php include('includes/numbers-words.php'); ?>
 function isValidIDCard(idCard) {
     // Check if the ID card is all numbers, exactly 13 characters, and no special characters
     return /^\d{13}$/.test(idCard);
 }
+
+
 $(document).ready(function() {
+    setTimeout(function () {
+                $('#toggle').click();
+                
+            }, 3000); 
     // When a checkbox is clicked
     $('#receiptForm').on('submit', function (e) {
     e.preventDefault(); // Prevent form submission for testing purposes
@@ -254,25 +267,62 @@ $(document).ready(function() {
     $('.number-input2').keyup(function(){
         $('.words2').val(inWords(this.value));
     });
+    $('.number-input3').keyup(function(){
+        $('.words3').val(inWords(this.value));
+    });
+    $('.number-input4').keyup(function(){
+        $('.words4').val(inWords(this.value));
+    });
 
     $('.number-input1').blur(function(){
-       const result = parseInt(parseInt($('.number-input2').val(), 10) - $('.number-input1').val(), 10);
+
+       
+       const value = $('.number-input4').val().trim();
+       if (value === "") {
+         result = parseInt(parseInt($('.number-input2').val(), 10) - $('.number-input1').val(), 10);
+       }else{
+            input4 = parseInt($('.number-input4').val().trim(), 10);
+             result = parseInt(parseInt($('.number-input2').val(), 10) - $('.number-input1').val(), 10)-input4;
+        }
+
        $('.number-input3').val(result);
        $('.words3').val(inWords($('.number-input3').val()));
 
     });
-    
-    $('input[name="condition"]').on('change', function() {
-        // Uncheck the other checkbox
-        $('input[name="condition"]').not(this).prop('checked', false);
 
-        // If 'CONDITIONAL' is selected, show the textarea
-        if ($('#conditional').is(':checked')) {
-            $('.condition').show('fast');
-        } else {
-            $('.condition').hide('fast');
-        }
+
+    //number-input4"
+    
+    $('.number-input4').blur(function(){
+        const result = 
+    parseInt($('.number-input2').val(), 10) - 
+    parseInt($('.number-input4').val(), 10) - 
+    parseInt($('.number-input1').val(), 10);
+
+       $('.number-input3').val(result);
+       $('.words3').val(inWords($('.number-input3').val()));
+
     });
+
+
+    
+    $('input[name="conditional_token"], input[name="confirm_token"]').on('change', function() {
+    // Uncheck the other checkbox
+    
+
+    // If 'CONDITIONAL' is selected, show the textarea
+    if ($('#conditional').is(':checked')) {
+        $('.condition').show('fast');
+    } else {
+        $('.condition').hide('fast');
+    }
+});
+
+    $('input[name="token_type"]').on('change', function() {
+        // Uncheck all checkboxes except the one that was clicked
+        $('input[name="token_type"]').not(this).prop('checked', false);
+    });
+
 
 
     $('#id_card').keyup('input', function () {
@@ -284,6 +334,26 @@ $(document).ready(function() {
             $('.id_card_error').hide();
         }
     });
+
+   // --------------------------------------------
+    $(".number-input4").on("input", function () {
+        if ($(this).val().trim() !== "") {
+            $("#biyanah_date").attr("required", "required");
+        } else {
+            $("#biyanah_date").removeAttr("required");
+        }
+    });
+    // --------------------------------------------
+
+
+    // --------------------------------------------
+    $(".number-input3").on("input", function () {
+        if ($(this).val().trim() !== "") {
+            $("#remaining_date").attr("required", "required");
+        } else {
+            $("#remaining_date").removeAttr("required");
+        }
+    });
     // --------------------------------------------
 
     $('.new-inv').on('click', function () {
@@ -293,17 +363,35 @@ $(document).ready(function() {
         const InvName = $('#inv-name').val();
         const floor = $('#floor').val();
         const customer_id = $('#customer_id').val();
+        const registration_number = $('#registration_number').val();
+        const possession = $('#possession').val();
+        const utility = $('#Utility').val();
+        const extra = $('#extra').val();
+        const corner = $('#corner').val();
+        const size = $('#size').val();
         
         const type = $('#type').val();
 
-        if($('#inventory_id').val()==''){
-            $('.inv_error').show().html('Create Inventory with the name first');
-            $('#inv-name').focus();
+        // if($('#inventory_id').val()==''){
+        //     $('.inv_error').show().html('Create Inventory with the name first');
+        //     $('#inv-name').focus();
+        // }
+
+        
+
+        if($('#registration_number').val()==''){
+            $('#registration_number').focus();
+            // showResponse('Registration Number field is empty','error');
+            $('.inv_error').show().html('Registration Number field is empty');
+            $('#registration_number').focus();
+            return;
         }
+        
 
         if($('#number-input').val()==''){
             showResponse('Total Amount field is empty','error');
             $('#number-input').focus();
+            return;
         }
 
        
@@ -311,6 +399,7 @@ $(document).ready(function() {
         if($('#customer_id').val()==''){
             $('.id_card_error').show().html('Create Customer first');
             $('#name').focus();
+            return;
         }
         
         if(InvName ==''){
@@ -334,7 +423,7 @@ $(document).ready(function() {
         $.ajax({
         url: 'Inventory/InventoryController?action=store_inventory', // Adjust the endpoint
         type: 'POST',
-        data: { name: InvName, floor: floor, customer_id: customer_id, type: type},
+        data: { name: InvName, floor: floor, customer_id: customer_id, type: type,registration_number: registration_number,possession: possession,utility: utility,extra: extra,corner: corner,size: size},
         success: function (response) {
             const data = JSON.parse(response); // Parse response if needed
             if (data.success) {
@@ -424,6 +513,22 @@ $(document).ready(function() {
     });
     //
 
+               
+    $("#fullpayment").on("change", function() {
+    if ($(this).is(":checked")) {
+        // If checked, clear values and set readonly
+        $("input[name='ramount'], input[name='biyanah']")
+            .val("")
+            .prop("readonly", true);
+    } else {
+        // If unchecked, remove readonly
+        $("input[name='ramount'], input[name='biyanah']")
+            .prop("readonly", false);
+    }
+});
+
+    
+
     $('#inv-name').on('blur', function () {
         $('.inventory-results').hide();
         
@@ -470,11 +575,49 @@ $(document).ready(function() {
     });
 
 
+    $('#phone').on('blur', function () {
+    const phone = $(this).val();
+   
+    if (phone) {
+        $('.spinner').removeClass('hidden');
+        $.ajax({
+            url: 'Customer/CustomerController?action=check_customer_by_phone', // Adjust the endpoint if necessary
+            type: 'POST',
+            data: { phone: phone },
+            dataType: 'json', // Automatically parses the response as JSON
+            success: function (response) {
+                $('.spinner').addClass('hidden');
+                if (response.success) {
+                    // Autofill form fields with customer data
+                    $('#customer_id').val(response.data.id);
+                    $('#name').val(response.data.name);
+                    $('#id_card').val(response.data.id_card); // You can also autofill the ID card field
+                    $('.receipt-generate').removeAttr('disabled');
+
+                    if ($('#customer_id').val() != '') {
+                        $('.new-cus').hide();
+                    }
+                } else {
+                    // Show error if the customer doesn't exist
+                    $('.new-cus').show('slow');
+                    $('#customer_id').val('');
+                    $('.receipt-generate').attr('title', 'Create New Customer First');
+                }
+            },
+            error: function () {
+                alert('Error while checking phone number');
+                $('.spinner').addClass('hidden');
+            }
+        });
+    }
+});
+
+
     $('#id_card').on('blur', function () {
             const idCard = $(this).val();
             if(idCard ==''){
                             $('.id_card_error').show().html('ID card Field is empty');
-                            $('#id_card').focus();
+                            //$('#id_card').focus();
                             return;
             }else{
                 $('.id_card_error').hide();

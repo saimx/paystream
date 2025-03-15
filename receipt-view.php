@@ -35,8 +35,8 @@ include('header.php');
     }
     .contex{
         text-transform: none !important;
-        line-height: 50px;
-
+       font-size: 20px;
+        line-height: 40px;
         text-align: justify;
     
     }
@@ -62,9 +62,34 @@ include('header.php');
     font-size: 12px;
     font-style: normal;
 }
+#inventoryTable{
+    border-radius: 5px !important;
+
+    box-shadow:0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 2px 0px 0 rgba(0, 0, 0, 0.12) !important;
+    background-color: transparent;
+    text-align: center;
+    margin-top: 40px;
+}
+table thead, th, td{
+    background: transparent !important;
+    text-align: center;
+}
+tbody{
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+th,td{
+    border: 0px !important;
+    text-align: center !important;
+    border-right: 1px solid gray !important;
+}
+td{padding: 20px !important;
+font-size: 20px !important;}
+
     
     .pagingx {
-    height: 300px; /* Adjust this to set the desired space */
+    height: 50px; /* Adjust this to set the desired space */
     /* Optionally, add margin if needed */
     margin-top: 20px; /* Adds space above */
     margin-bottom: 20px; /* Adds space below */
@@ -78,7 +103,7 @@ include('header.php');
             width: 120px !important;
         }
         .contex{
-            line-height: 35px !important;
+            line-height: 30px !important;
         }
         .qr-img{
             bottom: -135px !important;
@@ -100,8 +125,7 @@ include('header.php');
 require_once 'Payment/PaymentController.php';
 $controller = new PaymentController();
 $payments = $controller->get_payment_with_receipt($_GET['id']);
-// echo"<pre>";
-//  print_r($payments);
+
 //  die;
 ?>
     <!-- End of preloader -->
@@ -124,6 +148,7 @@ $payments = $controller->get_payment_with_receipt($_GET['id']);
                                  if (isset($payments[1])) {
 
                                     foreach ($payments as $index => $payment) {
+                                      
                                         $number = $index+1;
                                         echo "<li><a class='' href='?id={$_GET['id']}&index={$index}'><span class='fontello-popup'></span>Receipt {$number}</a></li>";
                                         
@@ -145,7 +170,7 @@ $payments = $controller->get_payment_with_receipt($_GET['id']);
             <!-- end of breadcrumbs -->
 
         <!-- ---------------------------------------------- -->
-        <?php include('includes/alert.php');?>
+       
         <!-- ---------------------------------------------- -->
                 <!-- end of breadcrumbs -->
 
@@ -160,14 +185,22 @@ $payments = $controller->get_payment_with_receipt($_GET['id']);
                                
                                    
                                     
+                                    
 
                                 
                                
                                 <a style="font-size:12px" id="printButton" href="#" class="button tiny radius"><i class="fontello-print"></i> Print</a>
                                 <a  class="button tiny radius" id="downloadPdf"><i class="fontello-download"></i>Download as PDF</a>
                                 <a target="_blank" href="https://wa.me/<?= $payments[0]['customer_phone'] ?>?text=Aoa," class="button tiny radius bg-green "><i class="fontello-forward"></i> Share</a>
-    
-                                
+                            <!-- debug block only when the dev parameter is set in the URL -->
+                                <?php
+                                    if (isset($_GET['dev'])) {
+                                        echo "<pre><code>";
+                                        print_r($payments);
+                                        echo "</code></pre>";
+                                    }
+                                ?>
+                                <!-- ---------------------------- -->
                                     
                                 
                 </div>
@@ -218,30 +251,78 @@ $payments = $controller->get_payment_with_receipt($_GET['id']);
                                     </div>
                                 </div>
                             </div>  
-                            <div class="paging"><br><br><br><br><br></div> 
-                            <h1 class="nunito bolder center-text">Payment Receipt</h1>
+                            <div class="paging"><br><br></div>
+                            <!-- ----------------------First Check the Type of Payment Biyana full payment or conditional payment  -->
+                             <?php
+                             $payments[$index]['Due_Date'] = date("Y-m-d", strtotime(($payments[$index]['Due_Date'])));
+                             if(!empty($payments[$index]['ref_cheq_no'])){
+                                $refrence =' with reference <span class="highlight"> ('.$payments[$index]['ref_cheq_no'].')</span>';
+                             }else{
+                                $refrence = '';
+                             }
+                              
+                             $biyanah = False; 
+                             if($payments[$index]['token_type']=='conditional-token'){
+                                $biyanah = False; 
+                                // [token_type] => conditional-token
+                                
+                                    echo'<h1 class="nunito bolder center-text">Conditional Token Payment Receipt</h1>';
+                                    $pType = 'Conditional Token';
+                             }elseif($payments[$index]['token_type']=='confirm-token'){
+                                    echo'<h1 class="nunito bolder center-text">Confirmed Token Payment Receipt</h1>';
+                                    $pType = 'Confirmed Token';
+                            }elseif($payments[$index]['token_type']=='full-payment'){
+                                    echo'<h1 class="nunito bolder center-text">Full Payment Receipt</h1>';
+                                    $pType = 'Full Payment';
+                                
+                            }else{
+                                    echo'<h1 class="nunito bolder center-text"> Payment Confirmation Receipt</h1>';
+                                    $pType = '';
+                            }
+                           
+                             
+                             ?>
+                            
+
+                            <!-- ----------------------------------------- -->
                             <div class="row line-h">
                                 <div class="columns large-11 medium-11 small-11 large-centered  medium-centered small-centered" style="margin-top: 10px;">
                                     <!-- if Os_amount is not empty then it will be a partial payment -->
                                     <?php if (!empty($payments[$index]['os_amt']) && $payments[$index]['os_amt'] != 0) { ?> 
                                         <h3 class="weigh-normal contex">
-                                            This is to acknowledge receipt of a partial payment of  <span class="highlight">
+                                            This is to acknowledge receipt of a <?= $pType ?> payment of  <span class="highlight">
                                             <?= $payments[$index]['receive_mount_in_words'] ?></span><span class="highlight">  (PKR <?= number_format($payments[$index]['amount'])?>) </span>
-                                            from <span class="highlight"><?=strtoupper($payments[$index]['customer_name'])?></span> with ID Card No:<span class="highlight"> <?=($payments[$index]['customer_id_card'])?></span> as part of the total payment of <span class="highlight"> <?=($payments[$index]['amount_in_words'])?></span> <span class="highlight">(Rs <?=($payments[0]['Due_Amt'])?>)</span>
-                                            as payment for the purchase of <span class="highlight underline"><?=($payments[0]['inventory_name'])?></span> located in <span class="highlight underline"><?=($payments[0]['inventory_floor'])?></span> through <span class="highlight"><?=strtoupper(($payments[$index]['method']))?> </span>with reference  
-                                            <span class="highlight"><?=($payments[$index]['ref_cheq_no'])?></span> on <span class="highlight"> <?=$payments[$index]['Due_Date']?></span>.The remaining balance of <?= $payments[0]['remaining_mount_in_words'] ?></span><span class="highlight"> (PKR <?= number_format($payments[$index]['os_amt'])?>) </span> is yet to be paid.
+                                            from <span class="highlight"><?=strtoupper($payments[$index]['customer_name'])?></span> on <span class="highlight"><?= date("l, jS F Y", strtotime(($payments[$index]['created_at']))) ?></span>  with ID Card No:<span class="highlight"> <?=($payments[$index]['customer_id_card'])?></span> as part of the total payment of <span class="highlight"> <?=($payments[$index]['amount_in_words'])?></span> <span class="highlight">(Rs <?=($payments[0]['Due_Amt'])?>)</span>
+                                            as payment for the purchase of <?= $payments[$index]['inventory_type']; ?> Number <span class="highlight underline"><?=   ($payments[0]['inventory_name'])?></span> Size <span class="highlight underline"><?=   ($payments[0]['inventory_size'])?></span> with Registration Number <span class="highlight underline"><?=   ($payments[0]['inventory_registration'])?></span>  located in <span class="highlight underline"><?=($payments[0]['inventory_floor'])?></span> through <span class="highlight"><?=strtoupper(($payments[$index]['method']))?> </span> <?= $refrence ?> on <span class="highlight"> <?=$payments[$index]['Due_Date']?></span>.
+                                            <?php if (!empty($payments[$index]['biyanah']) && $payments[$index]['biyanah'] != 0) { ?>
+                                            <hr>
+                                            <div class="context">As per our mutual agreement Biyanah will be made on the <span class="highlight "> <?= date("l, jS F Y", strtotime($payments[0]['biyanah_date']));   ?></span> with an amount of <span class="highlight "><?=($payments[0]['biyanah_in_words'])?> (PKR <?= number_format($payments[$index]['biyanah'])?>)</span> </span> 
+                                            and the remaining balance of <span class="highlight "><?= $payments[0]['remaining_mount_in_words'] ?></span><span class="highlight"> (PKR <?= number_format($payments[$index]['os_amt'])?>) </span> is yet to be paid on <span class="highlight"><?= date("l, jS F Y", strtotime($payments[0]['remaining_date'])) ?></span>.</div>
+                                            <?php } ?>
                                         </h3>
                                     <?php }else{ ?>
                                     <h3 class="weigh-normal contex">
                                         This is to acknowledge receipt of an amount of <span class="highlight">
                                         <?= $payments[$index]['receive_mount_in_words'] ?></span><span class="highlight"> (PKR <?= number_format($payments[$index]['amount'])?>) </span>
-                                        from <span class="highlight"><?=strtoupper($payments[$index]['customer_name'])?></span> with ID Card No:<span class="highlight"> <?=($payments[$index]['customer_id_card'])?></span> 
-                                        as payment for the purchase of <span class="highlight underline"><?=($payments[0]['inventory_name'])?></span> located in <span class="highlight underline"><?=($payments[$index]['inventory_floor'])?></span> through <span class="highlight"><?=strtoupper(($payments[$index]['method']))?> </span>with reference  
-                                        <span class="highlight"><?=($payments[$index]['ref_cheq_no'])?></span> on <span class="highlight"> <?=$payments[$index]['Due_Date']?></span>.
+                                        from <span class="highlight"><?=strtoupper($payments[$index]['customer_name'])?></span> on <span class="highlight"><?= date("l, jS F Y", strtotime(($payments[$index]['created_at']))) ?></span>  with ID Card No:<span class="highlight"> <?=($payments[$index]['customer_id_card'])?></span> 
+                                        as payment for the purchase of <?= $payments[$index]['inventory_type']; ?> Number <span class="highlight underline"><?=($payments[0]['inventory_name'])?></span> Size <span class="highlight underline"><?=   ($payments[0]['inventory_size'])?></span> with Registration Number <span class="highlight underline"><?=   ($payments[0]['inventory_registration'])?></span>   located in <span class="highlight underline"><?=($payments[$index]['inventory_floor'])?></span> through <span class="highlight"><?=strtoupper(($payments[$index]['method']))?> </span> <?= $refrence ?> on <span class="highlight"> <?=$payments[$index]['Due_Date']?></span>.
                                     </h3>
 
                                     <img class="stamp right" src="img/receipt/fullpaid.png">
                                     <?php } ?>
+
+                                    <table  id="inventoryTable" data-filter="#filter" class=" no-paging footable-loaded footable default demo inventory-table" style="width:100%">
+                                        <thead>
+                                            <th>Possession Payment</th>
+                                            <th>Utilities Payment</th>
+                                            <th>Corner Payment</th>
+                                            <th>Extra Area Payment</th>
+                                        </thead>
+                                            <td>Paid</td>
+                                            <td>Not Paid</td>
+                                            <td>Not Paid</td>
+                                            <td>Not Paid</td>
+                                    </table>
                                      
                                 </div>
 
@@ -266,7 +347,8 @@ $payments = $controller->get_payment_with_receipt($_GET['id']);
                             <blockquote class="footer-note footer-down" style="position: relative;">
                                 NOTE: <?= htmlspecialchars($payments[$index]['note'], ENT_QUOTES, 'UTF-8') ?>
                                 <hr>
-                                <span class="issue">Issued By(<?=($payments[$index]['issue_by'])?>)</span> 
+                                <span class="issue">Issued By <?=($payments[$index]['issue_by'])?> | <?=($payments[$index]['reqested_by'])?> </span> 
+                              
                             </blockquote>
 
                             <?php
@@ -274,7 +356,8 @@ $payments = $controller->get_payment_with_receipt($_GET['id']);
                              }else{
                                 ?>
 
-                                <span class="issue">Issued By(<?=($payments[$index]['issue_by'])?>)</span> 
+                            <span class="issue">Issued By <?=($payments[$index]['issue_by'])?> | <?=($payments[$index]['reqested_by'])?> </span> 
+                              
                             <?php 
                             }
                             ?>
