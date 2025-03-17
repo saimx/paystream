@@ -1,5 +1,0 @@
-[09-Jan-2025 18:31:12 UTC] PHP Warning:  require_once(D:\wamp642\www\paystream/config.php): Failed to open stream: No such file or directory in D:\wamp642\www\paystream\dashboard.php on line 12
-[09-Jan-2025 18:31:12 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'D:\wamp642\www\paystream/config.php' (include_path='.;C:\php\pear') in D:\wamp642\www\paystream\dashboard.php:12
-Stack trace:
-#0 {main}
-  thrown in D:\wamp642\www\paystream\dashboard.php on line 12

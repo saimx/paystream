@@ -146,6 +146,41 @@
             }
             exit;
         }
+
+
+public function checkCustomerByPhone()
+{
+    $phone = $_POST['phone'] ?? '';
+
+    // Check if the phone field is empty
+    if (empty($phone)) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Phone number is required.'
+        ]);
+        return;
+    }
+
+    // Retrieve customer details using the model
+    $customer = $this->customerModel->getCustomerByPhone($phone);
+
+    // Check if the customer exists
+    if ($customer) {
+        echo json_encode([
+            'success' => true,
+            'data' => [
+                'id' => $customer['id'],
+                'name' => $customer['name'],
+                'id_card' => $customer['id_card'], // Optionally return the ID card here
+            ]
+        ]);
+    } else {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Customer not found.'
+        ]);
+    }
+}
         
 
         public function checkCustomerByIdCard()
@@ -238,7 +273,7 @@
                     $this->checkCustomerByIdCard();
                     break;
                 case 'check_customer_by_phone':
-                        $this->checkCustomerByIdCard();
+                        $this->checkCustomerByPhone();
                     break;
                 case 'store_customer':
                     $this->storeBasicCustomer();
@@ -330,7 +365,7 @@
     } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
         define('SECURE_ACCESS', true);
         define('ROOT_PATH', __DIR__);
-        require_once ROOT_PATH . '/../../../config.php';
+        require_once ROOT_PATH . '/../../../config-demo.php';
   
         $controller = new CustomerController();
         $controller->handleRequest($_GET['action']);
@@ -341,7 +376,7 @@
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && !(isset($_GET['action'])) ) {
         define('SECURE_ACCESS', true);
         define('ROOT_PATH', __DIR__);
-        require_once ROOT_PATH . '/../../../config.php';
+        require_once ROOT_PATH . '/../../../config-demo.php';
     
         $controller = new CustomerController();
         $controller->handleFormSubmission();

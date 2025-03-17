@@ -203,6 +203,12 @@ class InventoryController
         echo json_encode($inventory);
     }
 
+    public function viewInventory_by_id($id)
+    {
+        $inventory = $this->inventoryModel->getInventoryById($id);
+        return json_encode($inventory);
+    }
+
     // Delete an inventory item by ID
     public function deleteInventory($id)
     {
@@ -296,19 +302,19 @@ class InventoryController
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) {
     define('ROOT_PATH', __DIR__);
     define('SECURE_ACCESS', true);
-    require_once ROOT_PATH . '/../../../config.php';
+    require_once ROOT_PATH . '/../../../config-demo.php';
     $controller = new InventoryController();
     $controller->handleRequest($_GET['action']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
     define('ROOT_PATH', __DIR__);
     define('SECURE_ACCESS', true);
-    require_once ROOT_PATH . '/../../../config.php';
+    require_once ROOT_PATH . '/../../../config-demo.php';
     $controller = new InventoryController();
     $controller->handleRequest($_GET['action']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && !(isset($_GET['action']))) {
     define('ROOT_PATH', __DIR__);
     define('SECURE_ACCESS', true);
-    require_once ROOT_PATH . '/../../../config.php';
+    require_once ROOT_PATH . '/../../../config-demo.php';
     $controller = new InventoryController();
     $controller->handleFormSubmission();
 }

@@ -186,19 +186,19 @@ class ReceiptsController
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) {
     define('ROOT_PATH', __DIR__);
     define('SECURE_ACCESS', true);
-    require_once ROOT_PATH . '/../../../config.php';
+    require_once ROOT_PATH . '/../../../config-demo.php';
     $controller = new ReceiptsController();
     $controller->handleRequest($_GET['action']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
     define('ROOT_PATH', __DIR__);
     define('SECURE_ACCESS', true);
-    require_once ROOT_PATH . '/../../../config.php';
+    require_once ROOT_PATH . '/../../../config-demo.php';
     $controller = new ReceiptsController();
     $controller->handleRequest($_GET['action']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && !(isset($_GET['action']))) {
     define('ROOT_PATH', __DIR__);
     define('SECURE_ACCESS', true);
-    require_once ROOT_PATH . '/../../../config.php';
+    require_once ROOT_PATH . '/../../../config-demo.php';
     $controller = new ReceiptsController();
     $controller->handleFormSubmission();
 }
