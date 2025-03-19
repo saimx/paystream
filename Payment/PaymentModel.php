@@ -19,6 +19,195 @@ class PaymentModel
         }
     }
 
+    public function createInvoice($data)
+    {
+        $query = "INSERT INTO payment (
+                    Payment_Description,
+                    Installment_No,
+                    Due_Date,
+                    Due_Amt,
+                    Receipt_Amt,
+                    os_amt,
+                    Discount_Amt,
+                    remaining_date,
+                    biyanah,
+                    biyanah_in_words,
+                    biyanah_date,
+                    token_type,
+                    Inventory_id,
+                    issue_by,
+                    reqested_by,
+                    customer_id
+                  ) VALUES (
+                    :Payment_Description,
+                    :Installment_No,
+                    :Due_Date,
+                    :Due_Amt,
+                    :Receipt_Amt,
+                    :os_amt,
+                    :Discount_Amt,
+                    :remaining_date,
+                    :biyanah,
+                    :biyanah_in_words,
+                    :biyanah_date,
+                    :token_type,
+                    :Inventory_id,
+                    :issue_by,
+                    :reqested_by,
+                    :customer_id
+                  )";
+        
+        $stmt = $this->pdo->prepare($query);
+    
+        $stmt->bindValue(':Payment_Description', $data['Payment_Description']);
+        $stmt->bindValue(':Installment_No', $data['Installment_No']);
+        $stmt->bindValue(':Due_Date', $data['Due_Date']);
+        $stmt->bindValue(':Due_Amt', $data['Due_Amt']);
+        $stmt->bindValue(':Receipt_Amt', isset($data['Receipt_Amt']) ? $data['Receipt_Amt'] : 0.00);
+        $stmt->bindValue(':os_amt', $data['os_amt']);
+        $stmt->bindValue(':Discount_Amt', $data['Discount_Amt']);
+        $stmt->bindValue(':remaining_date', $data['remaining_date']);
+        $stmt->bindValue(':biyanah', $data['biyanah']);
+        $stmt->bindValue(':biyanah_in_words', $data['biyanah_in_words']);
+        $stmt->bindValue(':biyanah_date', $data['biyanah_date']);
+        $stmt->bindValue(':token_type', $data['token_type']);
+        $stmt->bindValue(':Inventory_id', $data['Inventory_id']);
+        $stmt->bindValue(':issue_by', $data['issue_by']);
+        $stmt->bindValue(':reqested_by', $data['reqested_by']);
+        $stmt->bindValue(':customer_id', $data['customer_id']);
+        
+        if ($stmt->execute()) {
+             $insertedId = $this->pdo->lastInsertId();
+             return [
+                 'success' => true,
+                 'id' => $insertedId
+             ];
+        } else {
+             return false;
+        }
+    }
+    
+
+
+public function saveInvoiceItems($payment_id, $items) {
+    $query = "INSERT INTO invoice_items (
+                payment_id,
+                inventory_id,
+                quantity,
+                price,
+                total_amount
+              ) VALUES (
+                :payment_id,
+                :inventory_id,
+                :quantity,
+                :price,
+                :total_amount
+              )";
+    $stmt = $this->pdo->prepare($query);
+
+    foreach ($items as $item) {
+        $stmt->bindValue(':payment_id', $payment_id, PDO::PARAM_INT);
+        $stmt->bindValue(':inventory_id', $item['inventory_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':quantity', $item['quantity'], PDO::PARAM_INT);
+        $stmt->bindValue(':price', $item['price']);
+        $stmt->bindValue(':total_amount', $item['line_total']);
+        $stmt->execute();
+    }
+    return true;
+}
+
+public function updateInvoice($payment_id, $headerData, $items) {
+    // Update header in payment table
+    $query = "UPDATE payment SET 
+                 Payment_Description = :Payment_Description,
+                 Due_Date = :Due_Date,
+                 Discount_Amt = :Discount_Amt,
+                 Due_Amt = :Due_Amt,
+                 os_amt = :os_amt,
+                 remaining_date = :remaining_date,
+                 issue_by = :issue_by,
+                 reqested_by = :reqested_by,
+                 customer_id = :customer_id
+              WHERE id = :payment_id";
+    $stmt = $this->pdo->prepare($query);
+    $stmt->bindValue(':Payment_Description', $headerData['Payment_Description']);
+    $stmt->bindValue(':Due_Date', $headerData['Due_Date']);
+    $stmt->bindValue(':Discount_Amt', $headerData['Discount_Amt']);
+    $stmt->bindValue(':Due_Amt', $headerData['Due_Amt']);
+    $stmt->bindValue(':os_amt', $headerData['os_amt']);
+    $stmt->bindValue(':remaining_date', $headerData['remaining_date']);
+    $stmt->bindValue(':issue_by', $headerData['issue_by']);
+    $stmt->bindValue(':reqested_by', $headerData['reqested_by']);
+    $stmt->bindValue(':customer_id', $headerData['customer_id']);
+    $stmt->bindValue(':payment_id', $payment_id, PDO::PARAM_INT);
+    $stmt->execute();
+    
+    // Delete all existing invoice items for this invoice
+    $deleteQuery = "DELETE FROM invoice_items WHERE payment_id = :payment_id";
+    $deleteStmt = $this->pdo->prepare($deleteQuery);
+    $deleteStmt->bindValue(':payment_id', $payment_id, PDO::PARAM_INT);
+    $deleteStmt->execute();
+    
+    // Insert new invoice items
+    $queryItems = "INSERT INTO invoice_items (
+                payment_id,
+                inventory_id,
+                quantity,
+                price,
+                total_amount
+              ) VALUES (
+                :payment_id,
+                :inventory_id,
+                :quantity,
+                :price,
+                :total_amount
+              )";
+    $stmtItems = $this->pdo->prepare($queryItems);
+    foreach ($items as $item) {
+         $stmtItems->bindValue(':payment_id', $payment_id, PDO::PARAM_INT);
+         $stmtItems->bindValue(':inventory_id', $item['inventory_id'], PDO::PARAM_INT);
+         $stmtItems->bindValue(':quantity', $item['quantity'], PDO::PARAM_INT);
+         $stmtItems->bindValue(':price', $item['price']);
+         $stmtItems->bindValue(':total_amount', $item['line_total']);
+         $stmtItems->execute();
+    }
+    return true;
+}
+
+
+public function getInvoice($payment_id) {
+    // Fetch invoice header from payment table
+    $query = "SELECT * FROM payment WHERE id = :payment_id";
+    $stmt = $this->pdo->prepare($query);
+    $stmt->bindValue(':payment_id', $payment_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $header = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    // Fetch invoice items for this invoice
+    $query2 = "SELECT ii.*, inv.name as product_name 
+               FROM invoice_items ii 
+               LEFT JOIN inventory inv ON ii.inventory_id = inv.id 
+               WHERE ii.payment_id = :payment_id";
+    $stmt2 = $this->pdo->prepare($query2);
+    $stmt2->bindValue(':payment_id', $payment_id, PDO::PARAM_INT);
+    $stmt2->execute();
+    $items = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Optionally, calculate the total from the items
+    $total_from_items = 0;
+    foreach ($items as $item) {
+         $total_from_items += $item['total_amount'];
+    }
+    
+    return [
+         'header' => $header,
+         'items'  => $items,
+         'total_from_items' => $total_from_items
+    ];
+}
+
+
+
     public function savePayments($payments)
     {
 
